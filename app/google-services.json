@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "462492923522",
+    "firebase_url": "https://androidfoodapp-326d0.firebaseio.com",
+    "project_id": "androidfoodapp-326d0",
+    "storage_bucket": "androidfoodapp-326d0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:462492923522:android:fb006ebe4704af7747269b",
+        "android_client_info": {
+          "package_name": "uk.ac.mmu.foodorderingapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "462492923522-ism6725dgbhfdrqigaopb1i7mfhjjt1b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "uk.ac.mmu.foodorderingapp",
+            "certificate_hash": "745e55c0df8c9e38c4c29facb4a08b2f0bac4229"
+          }
+        },
+        {
+          "client_id": "462492923522-qroukh303tu4vp9m3cfbvcev3p34jl69.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDub-46jXP1kQ3UgnMhcpbvARgG0kOobRI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "462492923522-qroukh303tu4vp9m3cfbvcev3p34jl69.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
