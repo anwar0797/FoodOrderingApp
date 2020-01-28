@@ -54,11 +54,11 @@ public class FoodDetail extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 new Database(getBaseContext()).addToCart(new Order(
-                      foodId,
-                      currentFood.getName(),
-                      numberButton.getNumber(),
-                      currentFood.getName()
-
+                        foodId,
+                        currentFood.getName(),
+                        numberButton.getNumber(),
+                        currentFood.getPrice(),
+                        currentFood.getDiscount()
 
                 ));
 
