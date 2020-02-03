@@ -6,15 +6,25 @@ public class User {
     private String Username;
     private String Password;
     private String Phone;
+    private String secureCode;
 
     public User() {
 
     }
 
-    public User(String username, String password) {
+    public User(String username, String password, String secureCode) {
         Username = username;
         Password = password;
+        this.secureCode = secureCode;
 
+    }
+
+    public String getSecureCode() {
+        return secureCode;
+    }
+
+    public void setSecureCode(String secureCode) {
+        this.secureCode = secureCode;
     }
 
     public String getPhone() {

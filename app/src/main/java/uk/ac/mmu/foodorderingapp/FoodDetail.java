@@ -2,6 +2,7 @@ package uk.ac.mmu.foodorderingapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import uk.ac.mmu.foodorderingapp.Common.Common;
 import uk.ac.mmu.foodorderingapp.Database.Database;
 import uk.ac.mmu.foodorderingapp.Model.Food;
 import uk.ac.mmu.foodorderingapp.Model.Order;
@@ -82,7 +83,13 @@ public class FoodDetail extends AppCompatActivity {
             foodId = getIntent().getStringExtra("FoodId");
         if(!foodId.isEmpty())
         {
-            getDetailFood(foodId);
+            if(Common.isConnectedToInternet(getBaseContext()))
+                getDetailFood(foodId);
+            else
+            {
+                Toast.makeText(FoodDetail.this, "Please check your connection", Toast.LENGTH_SHORT).show();
+                return;
+            }
         }
 
 

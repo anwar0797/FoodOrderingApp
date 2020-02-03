@@ -2,6 +2,7 @@ package uk.ac.mmu.foodorderingapp.ViewHolder;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +18,13 @@ import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import uk.ac.mmu.foodorderingapp.Common.Common;
 import uk.ac.mmu.foodorderingapp.Interface.ItemClickListener;
 import uk.ac.mmu.foodorderingapp.Model.Order;
 import uk.ac.mmu.foodorderingapp.R;
 
-class CartViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+class CartViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
+      ,View.OnCreateContextMenuListener  {
 
     public TextView txt_cart_name, txt_price;
     public ImageView img_cart_count;
@@ -38,11 +41,19 @@ class CartViewHolder extends RecyclerView.ViewHolder implements View.OnClickList
         txt_cart_name = (TextView)itemView.findViewById(R.id.cart_item_name);
         txt_price = (TextView)itemView.findViewById(R.id.cart_item_Price);
         img_cart_count = (ImageView)itemView.findViewById(R.id.cart_item_count);
+
+        itemView.setOnCreateContextMenuListener(this);
     }
 
     @Override
     public void onClick(View view) {
 
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+        contextMenu.setHeaderTitle("Select action");
+        contextMenu.add(0,0,getAdapterPosition(), Common.DELETE);
     }
 }
 

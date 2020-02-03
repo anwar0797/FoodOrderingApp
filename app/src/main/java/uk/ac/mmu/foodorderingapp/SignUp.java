@@ -2,6 +2,7 @@ package uk.ac.mmu.foodorderingapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import uk.ac.mmu.foodorderingapp.Common.Common;
 import uk.ac.mmu.foodorderingapp.Model.User;
 
 import android.app.ProgressDialog;
@@ -19,7 +20,7 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 
 public class SignUp extends AppCompatActivity {
 
-    MaterialEditText editPhone, editName, editPassword;
+    MaterialEditText editPhone, editName, editPassword, editSecureCode;
     Button btnSignUp;
 
     @Override
@@ -30,6 +31,7 @@ public class SignUp extends AppCompatActivity {
         editName = (MaterialEditText)findViewById(R.id.editName);
         editPassword = (MaterialEditText)findViewById(R.id.editPassword);
         editPhone = (MaterialEditText)findViewById(R.id.editPhone);
+        editSecureCode = (MaterialEditText)findViewById(R.id.editSecureCode);
 
         btnSignUp = (Button) findViewById(R.id.btnSignUp);
 
@@ -41,37 +43,43 @@ public class SignUp extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                final ProgressDialog mDialog = new ProgressDialog(SignUp.this);
-                mDialog.setMessage("Please wait...");
-                mDialog.show();
+                if (Common.isConnectedToInternet(getBaseContext())) {
 
-                table_user.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        //check if phone number already exists
-                        if(dataSnapshot.child(editPhone.getText().toString()).exists())
-                        {
-                            mDialog.dismiss();
-                            Toast.makeText(SignUp.this, "Phone number already exists", Toast.LENGTH_SHORT).show();
+                    final ProgressDialog mDialog = new ProgressDialog(SignUp.this);
+                    mDialog.setMessage("Please wait...");
+                    mDialog.show();
+
+                    table_user.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            //check if phone number already exists
+                            if (dataSnapshot.child(editPhone.getText().toString()).exists()) {
+                                mDialog.dismiss();
+                                Toast.makeText(SignUp.this, "Phone number already exists", Toast.LENGTH_SHORT).show();
+                            } else {
+
+                                mDialog.dismiss();
+                                User user = new User(editName.getText().toString(),
+                                        editPassword.getText().toString(),
+                                        editSecureCode.getText().toString());
+                                table_user.child(editPhone.getText().toString()).setValue(user);
+                                Toast.makeText(SignUp.this, "Sign up successful", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+
                         }
-                        else
-                        {
 
-                            mDialog.dismiss();
-                            User user = new User(editName.getText().toString(),editPassword.getText().toString());
-                            table_user.child(editPhone.getText().toString()).setValue(user);
-                            Toast.makeText(SignUp.this, "Sign up successful", Toast.LENGTH_SHORT).show();
-                            finish();
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
                         }
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
+                    });
+                } else {
+                    Toast.makeText(SignUp.this, "Please check your connection", Toast.LENGTH_SHORT).show();
+                    return;
+                }
             }
         });
     }

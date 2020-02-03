@@ -8,19 +8,28 @@ public class Request {
     private String name;
     private String address;
     private String total;
+    private String status;
     private List<Order> foods; //list of all foods within the order
 
     public Request() {
     }
 
-    public Request(String phone, String name, String address, String total, List<Order> foods) {
+    public Request(String phone, String name, String address, String total,  List<Order> foods) {
         this.phone = phone;
         this.name = name;
         this.address = address;
         this.total = total;
         this.foods = foods;
+        this.status = "0"; //default value, 0:placed, 1:shipping, 2:shipped
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public String getPhone() {
         return phone;

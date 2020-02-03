@@ -29,6 +29,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import io.paperdb.Paper;
 import uk.ac.mmu.foodorderingapp.Common.Common;
 import uk.ac.mmu.foodorderingapp.Interface.ItemClickListener;
 import uk.ac.mmu.foodorderingapp.Model.Category;
@@ -66,6 +67,9 @@ public class Home extends AppCompatActivity
         database = FirebaseDatabase.getInstance();
         category = database.getReference("Category");
 
+        //init paper
+        Paper.init(this);
+
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -95,8 +99,14 @@ public class Home extends AppCompatActivity
         recycler_menu.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recycler_menu.setLayoutManager(layoutManager);
-        
-        loadMenu();
+
+        if(Common.isConnectedToInternet(this))
+            loadMenu();
+        else
+        {
+            Toast.makeText(this, "Please check your connection", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
     }
 
@@ -151,6 +161,9 @@ public class Home extends AppCompatActivity
          //   return true;
         //}
 
+        if(item.getItemId() == R.id.refresh)
+            loadMenu();
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -163,10 +176,21 @@ public class Home extends AppCompatActivity
         if (id == R.id.nav_menu) {
 
         } else if (id == R.id.nav_cart) {
+            Intent cartIntent = new Intent(Home.this,Cart.class);
+            startActivity(cartIntent);
 
         } else if (id == R.id.nav_orders) {
+            Intent orderIntent = new Intent(Home.this,OrderStatus.class);
+            startActivity(orderIntent);
 
         } else if (id == R.id.nav_log_out) {
+
+            //delete user log in info
+            Paper.book().destroy();
+
+            Intent signin = new Intent(Home.this,SignIn.class);
+            signin.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(signin);
 
         }
 
