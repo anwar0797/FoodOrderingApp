@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import uk.ac.mmu.foodorderingapp.Common.Common;
 import uk.ac.mmu.foodorderingapp.Database.Database;
 import uk.ac.mmu.foodorderingapp.Interface.ItemClickListener;
@@ -50,6 +51,8 @@ public class FoodList extends AppCompatActivity {
     //favourites
     Database localDB;
 
+    SwipeRefreshLayout swipeRefreshLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,24 +65,55 @@ public class FoodList extends AppCompatActivity {
         //local db
         localDB = new Database(this);
 
+        //swipe refresh
+        swipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.swipe_layout);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,
+                android.R.color.holo_green_dark,
+                android.R.color.holo_orange_dark,
+                android.R.color.holo_blue_dark);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //get intent from home activity
+                if(getIntent() != null)
+                    categoryId = getIntent().getStringExtra("CategoryId");
+                if(!categoryId.isEmpty() && categoryId != null)
+                {
+                    if(Common.isConnectedToInternet(getBaseContext()))
+                        loadListFood(categoryId);
+                    else
+                    {
+                        Toast.makeText(FoodList.this, "Please check your connection", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
+            }
+        });
+
+        swipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                //get intent from home activity
+                if(getIntent() != null)
+                    categoryId = getIntent().getStringExtra("CategoryId");
+                if(!categoryId.isEmpty() && categoryId != null)
+                {
+                    if(Common.isConnectedToInternet(getBaseContext()))
+                        loadListFood(categoryId);
+                    else
+                    {
+                        Toast.makeText(FoodList.this, "Please check your connection", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
+            }
+        });
+
         recyclerView = (RecyclerView)findViewById(R.id.recycler_food);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        //get intent from home activity
-        if(getIntent() != null)
-            categoryId = getIntent().getStringExtra("CategoryId");
-        if(!categoryId.isEmpty() && categoryId != null)
-        {
-            if(Common.isConnectedToInternet(getBaseContext()))
-                loadListFood(categoryId);
-            else
-            {
-                Toast.makeText(FoodList.this, "Please check your connection", Toast.LENGTH_SHORT).show();
-                return;
-            }
-        }
 
         //search
         materialSearchBar = (MaterialSearchBar)findViewById(R.id.searchBar);
@@ -154,6 +188,7 @@ public class FoodList extends AppCompatActivity {
                 viewHolder.food_name.setText(model.getName());
                 Picasso.with(getBaseContext()).load(model.getImage())
                         .into(viewHolder.food_image);
+
 
                 final Food local = model;
                 viewHolder.setItemClickListener(new ItemClickListener() {
@@ -240,5 +275,6 @@ public class FoodList extends AppCompatActivity {
 
         //set adapter
         recyclerView.setAdapter(adapter);
+        swipeRefreshLayout.setRefreshing(false);
     }
 }

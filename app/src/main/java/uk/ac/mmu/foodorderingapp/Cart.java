@@ -12,6 +12,7 @@ import uk.ac.mmu.foodorderingapp.ViewHolder.CartAdapter;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -88,13 +90,14 @@ public class Cart extends AppCompatActivity {
         alertDialog.setTitle("One more step...");
         alertDialog.setMessage("Please enter your address");
 
-        final EditText edtAddress = new EditText(Cart.this);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT
-        );
-        edtAddress.setLayoutParams(lp);
-        alertDialog.setView(edtAddress); //add the edit text to the alert dialog
+        LayoutInflater inflater = this.getLayoutInflater();
+        View order_address_comment = inflater.inflate(R.layout.order_address_comment, null);
+
+        final MaterialEditText edtAddress = (MaterialEditText)order_address_comment.findViewById(R.id.edtAddress);
+        final MaterialEditText edtComment = (MaterialEditText)order_address_comment.findViewById(R.id.edtComment);
+
+
+        alertDialog.setView(order_address_comment);
         alertDialog.setIcon(R.drawable.ic_shopping_cart_black_24dp);
 
         alertDialog.setPositiveButton("CONFIRM", new DialogInterface.OnClickListener() {
@@ -106,6 +109,8 @@ public class Cart extends AppCompatActivity {
                         Common.currentUser.getUsername(),
                         edtAddress.getText().toString(),
                         txtTotalPrice.getText().toString(),
+                        "0", //status
+                        edtComment.getText().toString(),
                         cart
                 );
 

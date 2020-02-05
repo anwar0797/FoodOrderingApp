@@ -39,7 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColorHint="@android:color/white"
-            android:text="123"
+            android:text="12345"
             android:textColor="@android:color/white"
             android:textSize="34sp"
             android:inputType="textPassword"
@@ -83,7 +83,7 @@
 
     </LinearLayout>
 
-    <Button
+    <info.hoang8f.widget.FButton
         android:id="@+id/btnSignIn"
         android:text="Sign In"
         android:textColor="@android:color/white"
@@ -93,7 +93,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:background="@color/btnSignActive"
+        app:fButtonColor="@color/btnSignActive"
+        app:shadowColor="@android:color/black"
+        app:shadowEnabled="true"
+        app:shadowHeight="5dp"
+        app:cornerRadius="4dp"
         />
 
 </RelativeLayout>

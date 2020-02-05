@@ -13,7 +13,7 @@ import java.util.List;
 import uk.ac.mmu.foodorderingapp.Model.Order;
 
 public class Database extends SQLiteAssetHelper {
-    private static final String DB_NAME="FoodAppDB.db";
+    private static final String DB_NAME="FoodDB.db";
     private static final int DB_VER=1;
     public Database(Context context) {
         super(context, DB_NAME, null, DB_VER);
@@ -70,7 +70,7 @@ public class Database extends SQLiteAssetHelper {
     public void addToFavourites(String foodId)
     {
         SQLiteDatabase db = getReadableDatabase();
-        String query = String.format("INSERT INTO Favourites(FoodId) VALUES ('%s');",foodId);
+        String query = String.format("INSERT INTO Favourites(FoodId) VALUES('%s');",foodId);
         db.execSQL(query);
     }
 
