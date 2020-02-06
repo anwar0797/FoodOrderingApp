@@ -9,8 +9,12 @@ import uk.ac.mmu.foodorderingapp.Common.Common;
 import uk.ac.mmu.foodorderingapp.Database.Database;
 import uk.ac.mmu.foodorderingapp.Interface.ItemClickListener;
 import uk.ac.mmu.foodorderingapp.Model.Food;
+import uk.ac.mmu.foodorderingapp.Model.Order;
 import uk.ac.mmu.foodorderingapp.ViewHolder.FoodViewHolder;
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -54,8 +58,20 @@ public class FoodList extends AppCompatActivity {
     SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //set font
+        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
+                .setDefaultFontPath("fonts/restaurant_font.otf")
+                .setFontAttrId(R.attr.fontPath)
+                .build());
+
         setContentView(R.layout.activity_food_list);
 
         //firebase
@@ -79,6 +95,7 @@ public class FoodList extends AppCompatActivity {
                     categoryId = getIntent().getStringExtra("CategoryId");
                 if(!categoryId.isEmpty() && categoryId != null)
                 {
+
                     if(Common.isConnectedToInternet(getBaseContext()))
                         loadListFood(categoryId);
                     else
@@ -106,6 +123,65 @@ public class FoodList extends AppCompatActivity {
                         return;
                     }
                 }
+
+                //search
+                materialSearchBar = (MaterialSearchBar)findViewById(R.id.searchBar);
+                materialSearchBar.setHint("Enter Food Name");
+                //materialSearchBar.setSpeechMode(false);
+                loadSuggest();
+
+
+                materialSearchBar.setCardViewElevation(10);
+                materialSearchBar.addTextChangeListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                        //when user types then suggest list will chaneg
+
+                        List<String> suggest = new ArrayList<String>();
+                        for(String search:suggestList) //loop of suggest list
+                        {
+                            if(search.toLowerCase().contains(materialSearchBar.getText().toLowerCase()))
+                                suggest.add(search);
+                        }
+                        materialSearchBar.setLastSuggestions(suggest);
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+
+                    }
+                });
+                materialSearchBar.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
+                    @Override
+                    public void onSearchStateChanged(boolean enabled) {
+                        //when search bar is closed
+                        //restore original adapter
+                        if(!enabled)
+                            recyclerView.setAdapter(adapter);
+                    }
+
+                    @Override
+                    public void onSearchConfirmed(CharSequence text) {
+                        //when search finishes
+                        //show result of search adapter
+                        startSearch(text);
+
+                    }
+
+
+
+                    @Override
+                    public void onButtonClicked(int buttonCode) {
+
+                    }
+                });
             }
         });
 
@@ -115,67 +191,10 @@ public class FoodList extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
 
-        //search
-        materialSearchBar = (MaterialSearchBar)findViewById(R.id.searchBar);
-        materialSearchBar.setHint("Enter Food Name");
-        //materialSearchBar.setSpeechMode(false);
-        loadSuggest();
-
-        materialSearchBar.setLastSuggestions(suggestList);
-        materialSearchBar.setCardViewElevation(10);
-        materialSearchBar.addTextChangeListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                //when user types then suggest list will chaneg
-
-                List<String> suggest = new ArrayList<String>();
-                for(String search:suggestList) //loop of suggest list
-                {
-                    if(search.toLowerCase().contains(materialSearchBar.getText().toLowerCase()))
-                        suggest.add(search);
-                }
-                materialSearchBar.setLastSuggestions(suggest);
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-        materialSearchBar.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
-            @Override
-            public void onSearchStateChanged(boolean enabled) {
-                //when search bar is closed
-                //restore original adapter
-                if(!enabled)
-                    recyclerView.setAdapter(adapter);
-            }
-
-            @Override
-            public void onSearchConfirmed(CharSequence text) {
-                //when search finishes
-                //show result of search adapter
-                startSearch(text);
-
-            }
-
-
-
-            @Override
-            public void onButtonClicked(int buttonCode) {
-
-            }
-        });
-
     }
 
+
+        //SEACRH VIEW HOLDER
     private void startSearch(CharSequence text) {
         searchAdapter = new FirebaseRecyclerAdapter<Food, FoodViewHolder>(
                 Food.class,
@@ -186,6 +205,7 @@ public class FoodList extends AppCompatActivity {
             @Override
             protected void populateViewHolder(FoodViewHolder viewHolder, Food model, int position) {
                 viewHolder.food_name.setText(model.getName());
+                viewHolder.food_price.setText(model.getPrice());
                 Picasso.with(getBaseContext()).load(model.getImage())
                         .into(viewHolder.food_image);
 
@@ -209,12 +229,14 @@ public class FoodList extends AppCompatActivity {
         foodList.orderByChild("MenuId").equalTo(categoryId)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot postSnapshot:dataSnapshot.getChildren())
                         {
                             Food item = postSnapshot.getValue(Food.class);
                             suggestList.add(item.getName()); //add name to suggest list
                         }
+
+                        materialSearchBar.setLastSuggestions(suggestList);
                     }
 
                     @Override
@@ -223,6 +245,9 @@ public class FoodList extends AppCompatActivity {
                     }
                 });
     }
+
+
+    //MAIN VIEWHOLDER
 
     private void loadListFood(String categoryId) {
         adapter = new FirebaseRecyclerAdapter<Food, FoodViewHolder>(Food.class,
@@ -233,8 +258,26 @@ public class FoodList extends AppCompatActivity {
             @Override
             protected void populateViewHolder(final FoodViewHolder viewHolder, final Food model, final int position) {
                 viewHolder.food_name.setText(model.getName());
+                viewHolder.food_price.setText(String.format("£ %s", model.getPrice().toString()));
                 Picasso.with(getBaseContext()).load(model.getImage())
                         .into(viewHolder.food_image);
+
+                //quick cart
+                viewHolder.quick_cart.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        new Database(getBaseContext()).addToCart(new Order(
+                                adapter.getRef(position).getKey(),
+                                model.getName(),
+                                "1",
+                                model.getPrice(),
+                                model.getDiscount()
+
+                        ));
+
+                                Toast.makeText(FoodList.this, "Added to Cart", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
                 //Add favourites
                 if(localDB.isFavourite(adapter.getRef(position).getKey()))

@@ -5,9 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import io.paperdb.Paper;
 import uk.ac.mmu.foodorderingapp.Common.Common;
 import uk.ac.mmu.foodorderingapp.Model.User;
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -36,9 +39,14 @@ public class SignIn extends AppCompatActivity {
     FirebaseDatabase database;
     DatabaseReference table_user;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+
         setContentView(R.layout.activity_sign_in);
 
         editPhone = (MaterialEditText) findViewById(R.id.editPhone);
