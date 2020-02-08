@@ -6,6 +6,10 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.andremion.counterfab.CounterFab;
+import com.daimajia.slider.library.Animations.DescriptionAnimation;
+import com.daimajia.slider.library.SliderLayout;
+import com.daimajia.slider.library.SliderTypes.BaseSliderView;
+import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -20,6 +24,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
+import androidx.constraintlayout.solver.widgets.Snapshot;
 import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -27,8 +32,11 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
 
@@ -45,6 +53,7 @@ import io.paperdb.Paper;
 import uk.ac.mmu.foodorderingapp.Common.Common;
 import uk.ac.mmu.foodorderingapp.Database.Database;
 import uk.ac.mmu.foodorderingapp.Interface.ItemClickListener;
+import uk.ac.mmu.foodorderingapp.Model.Banner;
 import uk.ac.mmu.foodorderingapp.Model.Category;
 import uk.ac.mmu.foodorderingapp.ViewHolder.MenuViewHolder;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
@@ -75,6 +84,10 @@ public class Home extends AppCompatActivity
     SwipeRefreshLayout swipeRefreshLayout;
 
     CounterFab fab;
+
+    //slider
+    HashMap<String,String> image_list;
+    SliderLayout mSlider;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -177,7 +190,7 @@ public class Home extends AppCompatActivity
             }
         });
 
-        fab.setCount(new Database(this).getCountCart());
+        fab.setCount(new Database(this).getCountCart(Common.currentUser.getPhone()));
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -204,12 +217,77 @@ public class Home extends AppCompatActivity
                 R.anim.layout_fall_down);
         recycler_menu.setLayoutAnimation(controller);
 
+
+        //set up slider
+        setupSlider();
+
     }
+
+    private void setupSlider() {
+        mSlider = (SliderLayout)findViewById(R.id.slider);
+        image_list = new HashMap<>();
+
+        final DatabaseReference banners = database.getReference("Banner");
+
+        banners.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot postSnapshot:dataSnapshot.getChildren()) {
+
+                    Banner banner = postSnapshot.getValue(Banner.class);
+
+                    image_list.put(banner.getName()+"@@@"+banner.getId(),banner.getImage());
+                }
+                for (String key:image_list.keySet())
+                {
+                    String[] keySplit = key.split("@@@");
+                    String nameOfFood = keySplit[0];
+                    String idOfFood = keySplit[1];
+
+                    //create slider
+                    final TextSliderView textSliderView = new TextSliderView(getBaseContext());
+                    textSliderView
+                            .description(nameOfFood)
+                            .image(image_list.get(key))
+                            .setScaleType(BaseSliderView.ScaleType.Fit)
+                            .setOnSliderClickListener(new BaseSliderView.OnSliderClickListener() {
+                                @Override
+                                public void onSliderClick(BaseSliderView slider) {
+                                    Intent intent = new Intent(Home.this,FoodDetail.class);
+                                    //send food id
+                                    intent.putExtras(textSliderView.getBundle());
+                                    startActivity(intent);
+                                }
+                            });
+
+                    //add extra bundle
+                    textSliderView.bundle(new Bundle());
+                    textSliderView.getBundle().putString("FoodId", idOfFood);
+
+                    mSlider.addSlider(textSliderView);
+
+                    //remove event after finish
+                    banners.removeEventListener(this);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        mSlider.setPresetTransformer(SliderLayout.Transformer.Background2Foreground);
+        mSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
+        mSlider.setCustomAnimation(new DescriptionAnimation());
+        mSlider.setDuration(4000);
+    }
+
 
     @Override
     protected void onResume() {
         super.onResume();
-        fab.setCount(new Database(this).getCountCart());
+        fab.setCount(new Database(this).getCountCart(Common.currentUser.getPhone()));
     }
 
     private void loadMenu() {
@@ -222,6 +300,11 @@ public class Home extends AppCompatActivity
         recycler_menu.scheduleLayoutAnimation();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mSlider.stopAutoCycle();
+    }
 
     @Override
     public void onBackPressed() {

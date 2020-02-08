@@ -11,13 +11,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <activity android:name=".ShowComment"></activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCarGX9X_jnrLQM4rinLGzO2YhRykhOh8g"/>
+            android:value="AIzaSyCarGX9X_jnrLQM4rinLGzO2YhRykhOh8g" />
 
-        <activity android:name=".OrderStatus"></activity>
+        <activity android:name=".OrderStatus" />
         <activity android:name=".Cart" />
         <activity android:name=".FoodDetail" />
         <activity android:name=".FoodList" />

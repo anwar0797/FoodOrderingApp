@@ -263,39 +263,52 @@ public class FoodList extends AppCompatActivity {
                         .into(viewHolder.food_image);
 
                 //quick cart
-                viewHolder.quick_cart.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        new Database(getBaseContext()).addToCart(new Order(
-                                adapter.getRef(position).getKey(),
-                                model.getName(),
-                                "1",
-                                model.getPrice(),
-                                model.getDiscount()
+                    viewHolder.quick_cart.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            boolean isExists = new Database(getBaseContext()).checkFoodExists(adapter.getRef(position).getKey(),Common.currentUser.getPhone());
+                            if (!isExists) {
+                                new Database(getBaseContext()).addToCart(new Order(
+                                        Common.currentUser.getPhone(),
+                                        adapter.getRef(position).getKey(),
+                                        model.getName(),
+                                        "1",
+                                        model.getPrice(),
+                                        model.getDiscount(),
+                                        model.getImage()
 
-                        ));
+                                ));
 
-                                Toast.makeText(FoodList.this, "Added to Cart", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                            } else {
+                                new Database(getBaseContext()).increaseCart(Common.currentUser.getPhone(), adapter.getRef(position).getKey());
+                            }
+
+                            Toast.makeText(FoodList.this, "Added to Cart", Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
+
+
+
+
 
                 //Add favourites
-                if(localDB.isFavourite(adapter.getRef(position).getKey()))
+                if(localDB.isFavourite(adapter.getRef(position).getKey(),Common.currentUser.getPhone()))
                     viewHolder.fav_image.setImageResource(R.drawable.ic_favorite_black_24dp);
 
                 //click to change state of favourites
                 viewHolder.fav_image.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(!localDB.isFavourite(adapter.getRef(position).getKey()))
+                        if(!localDB.isFavourite(adapter.getRef(position).getKey(),Common.currentUser.getPhone()))
                         {
-                            localDB.addToFavourites(adapter.getRef(position).getKey());
+                            localDB.addToFavourites(adapter.getRef(position).getKey(),Common.currentUser.getPhone());
                             viewHolder.fav_image.setImageResource(R.drawable.ic_favorite_black_24dp);
                             Toast.makeText(FoodList.this, ""+model.getName()+" was added to favourites ", Toast.LENGTH_SHORT).show();
                         }
                         else
                         {
-                            localDB.removeFromFavourites(adapter.getRef(position).getKey());
+                            localDB.removeFromFavourites(adapter.getRef(position).getKey(),Common.currentUser.getPhone());
                             viewHolder.fav_image.setImageResource(R.drawable.ic_favorite_border_black_24dp);
                             Toast.makeText(FoodList.this, ""+model.getName()+" was removed from favourites ", Toast.LENGTH_SHORT).show();
                         }
@@ -319,5 +332,6 @@ public class FoodList extends AppCompatActivity {
         //set adapter
         recyclerView.setAdapter(adapter);
         swipeRefreshLayout.setRefreshing(false);
+
     }
 }

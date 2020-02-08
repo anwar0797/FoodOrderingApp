@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
+import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -26,39 +27,7 @@ import uk.ac.mmu.foodorderingapp.Interface.ItemClickListener;
 import uk.ac.mmu.foodorderingapp.Model.Order;
 import uk.ac.mmu.foodorderingapp.R;
 
-class CartViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
-      ,View.OnCreateContextMenuListener  {
 
-    public TextView txt_cart_name, txt_price;
-    public ElegantNumberButton btn_quantity;
-
-    private ItemClickListener itemClickListener;
-
-    public void setTxt_cart_name(TextView txt_cart_name) {
-        this.txt_cart_name = txt_cart_name;
-    }
-
-
-    public CartViewHolder(View itemView) {
-        super(itemView);
-        txt_cart_name = (TextView)itemView.findViewById(R.id.cart_item_name);
-        txt_price = (TextView)itemView.findViewById(R.id.cart_item_Price);
-        btn_quantity = (ElegantNumberButton) itemView.findViewById(R.id.btn_quantity);
-
-        itemView.setOnCreateContextMenuListener(this);
-    }
-
-    @Override
-    public void onClick(View view) {
-
-    }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
-        contextMenu.setHeaderTitle("Select action");
-        contextMenu.add(0,0,getAdapterPosition(), Common.DELETE);
-    }
-}
 
 public class CartAdapter extends RecyclerView.Adapter<CartViewHolder> {
 
@@ -83,6 +52,12 @@ public class CartAdapter extends RecyclerView.Adapter<CartViewHolder> {
 //                .buildRound(""+listData.get(position).getQuantity(), Color.RED);
 //        holder.img_cart_count.setImageDrawable(drawable);
 
+        Picasso.with(cart.getBaseContext())
+                .load(listData.get(position).getImage())
+                .resize(70, 70) //70 dp
+                .centerCrop()
+                .into(holder.cart_image);
+
         holder.btn_quantity.setNumber(listData.get(position).getQuantity());
         holder.btn_quantity.setOnValueChangeListener(new ElegantNumberButton.OnValueChangeListener() {
             @Override
@@ -94,7 +69,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartViewHolder> {
                 //update txttotal
                 //calculating the total price
                 int total = 0;
-                List<Order> orders = new Database(cart).getCarts();
+                List<Order> orders = new Database(cart).getCarts(Common.currentUser.getPhone());
                 for(Order item:orders)
                     total+=(Integer.parseInt(order.getPrice()))*(Integer.parseInt(item.getQuantity()));
                 Locale locale = new Locale("en", "GB");
@@ -116,4 +91,24 @@ public class CartAdapter extends RecyclerView.Adapter<CartViewHolder> {
     public int getItemCount() {
         return listData.size();
     }
+
+    public Order getItem(int position)
+    {
+        return listData.get(position);
+    }
+
+    public void removeItem(int position)
+    {
+        listData.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    public void restoreItem(Order item, int position)
+    {
+        listData.add(position,item);
+        notifyItemInserted(position);
+    }
+
+
+
 }

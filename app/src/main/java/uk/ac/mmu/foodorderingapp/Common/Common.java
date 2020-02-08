@@ -13,6 +13,8 @@ public class Common {
     public static final String USER_KEY = "Username";
     public static final String PWD_KEY = "Password";
 
+    public static final String INTENT_FOOD_ID = "FoodId";
+
 
     public static boolean isConnectedToInternet (Context context)
     {

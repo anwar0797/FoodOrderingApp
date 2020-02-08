@@ -2,6 +2,7 @@ package uk.ac.mmu.foodorderingapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import info.hoang8f.widget.FButton;
 import uk.ac.mmu.foodorderingapp.Common.Common;
 import uk.ac.mmu.foodorderingapp.Database.Database;
 import uk.ac.mmu.foodorderingapp.Model.Food;
@@ -11,6 +12,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -20,6 +22,8 @@ import android.widget.Toast;
 
 import com.andremion.counterfab.CounterFab;
 import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
@@ -51,6 +55,8 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
     DatabaseReference food;
     DatabaseReference ratingTbl;
 
+    FButton btnShowComment;
+
     Food currentFood;
 
     @Override
@@ -69,6 +75,16 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
                 .build());
 
         setContentView(R.layout.activity_food_detail);
+
+       // btnShowComment = (FButton)findViewById(R.id.btnShowComment);
+       /* btnShowComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(FoodDetail.this, ShowComment.class);
+                intent.putExtra(Common.INTENT_FOOD_ID,foodId);
+                startActivity(intent);
+            }
+        }); */
 
         //firebase
         database = FirebaseDatabase.getInstance();
@@ -92,11 +108,13 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
             @Override
             public void onClick(View view) {
                 new Database(getBaseContext()).addToCart(new Order(
+                        Common.currentUser.getPhone(),
                         foodId,
                         currentFood.getName(),
                         numberButton.getNumber(),
                         currentFood.getPrice(),
-                        currentFood.getDiscount()
+                        currentFood.getDiscount(),
+                        currentFood.getImage()
 
                 ));
 
@@ -104,7 +122,7 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
             }
         });
 
-        btnCart.setCount(new Database(this).getCountCart());
+        btnCart.setCount(new Database(this).getCountCart(Common.currentUser.getPhone()));
 
         food_description = (TextView)findViewById(R.id.food_description);
         food_name = (TextView)findViewById(R.id.food_name);
@@ -226,6 +244,18 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
                 foodId,
                 String.valueOf(value),
                 comments);
+
+      /*  //allowing user to rate food mulitple times
+        ratingTbl.push()
+                .setValue(rating)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Toast.makeText(FoodDetail.this, "Thank you for submitting your rating!", Toast.LENGTH_SHORT).show();
+                    }
+                }); */
+
+
         ratingTbl.child(Common.currentUser.getPhone()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -250,6 +280,5 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
 
             }
         });
-
     }
 }
