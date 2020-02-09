@@ -8,6 +8,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import uk.ac.mmu.foodorderingapp.Common.Common;
 import uk.ac.mmu.foodorderingapp.Database.Database;
 import uk.ac.mmu.foodorderingapp.Interface.ItemClickListener;
+import uk.ac.mmu.foodorderingapp.Model.Favourites;
 import uk.ac.mmu.foodorderingapp.Model.Food;
 import uk.ac.mmu.foodorderingapp.Model.Order;
 import uk.ac.mmu.foodorderingapp.ViewHolder.FoodViewHolder;
@@ -300,9 +301,21 @@ public class FoodList extends AppCompatActivity {
                 viewHolder.fav_image.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+
+                        Favourites favourites = new Favourites();
+                        favourites.setFoodId(adapter.getRef(position).getKey());
+                        favourites.setFoodName(model.getName());
+                        favourites.setFoodDescription(model.getDescription());
+                        favourites.setFoodDiscount(model.getDiscount());
+                        favourites.setFoodImage(model.getImage());
+                        favourites.setFoodMenuId(model.getMenuId());
+                        favourites.setUserPhone(Common.currentUser.getPhone());
+                        favourites.setFoodPrice(model.getPrice());
+
+
                         if(!localDB.isFavourite(adapter.getRef(position).getKey(),Common.currentUser.getPhone()))
                         {
-                            localDB.addToFavourites(adapter.getRef(position).getKey(),Common.currentUser.getPhone());
+                            localDB.addToFavourites(favourites);
                             viewHolder.fav_image.setImageResource(R.drawable.ic_favorite_black_24dp);
                             Toast.makeText(FoodList.this, ""+model.getName()+" was added to favourites ", Toast.LENGTH_SHORT).show();
                         }

@@ -331,8 +331,8 @@ public class Home extends AppCompatActivity
          //   return true;
         //}
 
-        if(item.getItemId() == R.id.refresh)
-            loadMenu();
+        if(item.getItemId() == R.id.nav_search)
+            startActivity(new Intent(Home.this,SearchActivity.class));
 
         return super.onOptionsItemSelected(item);
     }
@@ -366,6 +366,10 @@ public class Home extends AppCompatActivity
         else if(id == R.id.nav_change_pwd) 
         {
             showChangePasswordDialog();
+        }
+        else if(id == R.id.nav_favourites)
+        {
+            startActivity(new Intent(Home.this, FavouritesActivity.class));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

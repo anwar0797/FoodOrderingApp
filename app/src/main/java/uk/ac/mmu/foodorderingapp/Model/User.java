@@ -8,6 +8,7 @@ public class User {
     private String Phone;
     private String secureCode;
 
+
     public User() {
 
     }
@@ -18,6 +19,7 @@ public class User {
         this.secureCode = secureCode;
 
     }
+
 
     public String getSecureCode() {
         return secureCode;

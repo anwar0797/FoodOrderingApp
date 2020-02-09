@@ -34,6 +34,7 @@ public class ShowComment extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+
     }
 
     @Override
