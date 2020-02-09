@@ -197,7 +197,7 @@
 
             </androidx.cardview.widget.CardView>
 
-         <!--   <info.hoang8f.widget.FButton
+    <!--        <info.hoang8f.widget.FButton
                 android:id="@+id/btnShowComment"
                 android:text="Show Comments"
                 android:textColor="@android:color/white"
@@ -212,7 +212,7 @@
                 app:shadowEnabled="true"
                 app:shadowHeight="5dp"
                 app:cornerRadius="4dp"
-                />  -->
+                /> -->
 
 
         </LinearLayout>

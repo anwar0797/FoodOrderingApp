@@ -76,8 +76,8 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
 
         setContentView(R.layout.activity_food_detail);
 
-       // btnShowComment = (FButton)findViewById(R.id.btnShowComment);
-       /* btnShowComment.setOnClickListener(new View.OnClickListener() {
+       /* btnShowComment = (FButton)findViewById(R.id.btnShowComment);
+        btnShowComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(FoodDetail.this, ShowComment.class);
@@ -245,7 +245,7 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
                 String.valueOf(value),
                 comments);
 
-      /*  //allowing user to rate food mulitple times
+       /* //allowing user to rate food mulitple times
         ratingTbl.push()
                 .setValue(rating)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -279,6 +279,7 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
+
         });
     }
 }
