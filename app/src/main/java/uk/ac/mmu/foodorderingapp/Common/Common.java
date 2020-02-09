@@ -48,4 +48,6 @@ public class Common {
                         .toString());
         return date.toString();
     }
+
+    public static String restaurantSelected = "";
 }
