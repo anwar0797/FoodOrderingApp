@@ -48,6 +48,29 @@
                 app:met_singleLineEllipsis="true"
                 />
 
+            <TextView
+                android:text="Delivery and Payment Method :"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RadioButton
+                    android:id="@+id/btnCollection"
+                    android:text="Collection - Pay on Collection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <RadioButton
+                    android:id="@+id/btnDelivery"
+                    android:text="Delivery - Pay Now"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            </RadioGroup>
+
 
 
         </LinearLayout>

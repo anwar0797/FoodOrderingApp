@@ -65,7 +65,7 @@ public class OrderStatus extends AppCompatActivity {
                 R.layout.order_layout,
                 OrderViewHolder.class,
                 requests.orderByChild("phone")
-                    .equalTo(phone)
+                        .equalTo(phone)
         ) {
 
             @Override

@@ -2,8 +2,7 @@ package uk.ac.mmu.foodorderingapp.Model;
 
 import java.util.List;
 
-public class Request {
-
+public class Collection {
 
     private String phone;
     private String name;
@@ -13,13 +12,12 @@ public class Request {
     private String comment;
     private String paymentMethod;
     private String paymentState;
-    private List<Order> foods; //list of all foods within the order
+    private List<Order> foods;
 
-    public Request() {
+    public Collection() {
     }
 
-
-    public Request(String phone, String name, String address, String total, String status, String comment, String paymentMethod, String paymentState, List<Order> foods) {
+    public Collection(String phone, String name, String address, String total, String status, String comment, String paymentMethod, String paymentState, List<Order> foods) {
         this.phone = phone;
         this.name = name;
         this.address = address;
@@ -29,14 +27,6 @@ public class Request {
         this.paymentMethod = paymentMethod;
         this.paymentState = paymentState;
         this.foods = foods;
-    }
-
-    public String getPaymentMethod() {
-        return paymentMethod;
-    }
-
-    public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
     }
 
     public String getPhone() {
@@ -85,6 +75,14 @@ public class Request {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
     }
 
     public String getPaymentState() {

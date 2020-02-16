@@ -253,29 +253,29 @@ public class SearchActivity extends AppCompatActivity {
                 });
             }
         };
-        
+
 
         recyclerView.setAdapter(searchAdapter);
     }
 
     private void loadSuggest() {
         foodList.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot postSnapshot:dataSnapshot.getChildren())
-                        {
-                            Food item = postSnapshot.getValue(Food.class);
-                            suggestList.add(item.getName()); //add name to suggest list
-                        }
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot:dataSnapshot.getChildren())
+                {
+                    Food item = postSnapshot.getValue(Food.class);
+                    suggestList.add(item.getName()); //add name to suggest list
+                }
 
-                        materialSearchBar.setLastSuggestions(suggestList);
-                    }
+                materialSearchBar.setLastSuggestions(suggestList);
+            }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-                    }
-                });
+            }
+        });
     }
 
     @Override

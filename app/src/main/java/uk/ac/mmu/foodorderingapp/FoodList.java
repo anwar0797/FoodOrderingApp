@@ -195,7 +195,7 @@ public class FoodList extends AppCompatActivity {
     }
 
 
-        //SEACRH VIEW HOLDER
+    //SEACRH VIEW HOLDER
     private void startSearch(CharSequence text) {
         searchAdapter = new FirebaseRecyclerAdapter<Food, FoodViewHolder>(
                 Food.class,
@@ -255,7 +255,7 @@ public class FoodList extends AppCompatActivity {
                 R.layout.food_item,
                 FoodViewHolder.class,
                 foodList.orderByChild("MenuId").equalTo(categoryId)
-                ) {
+        ) {
             @Override
             protected void populateViewHolder(final FoodViewHolder viewHolder, final Food model, final int position) {
                 viewHolder.food_name.setText(model.getName());
@@ -264,30 +264,30 @@ public class FoodList extends AppCompatActivity {
                         .into(viewHolder.food_image);
 
                 //quick cart
-                    viewHolder.quick_cart.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            boolean isExists = new Database(getBaseContext()).checkFoodExists(adapter.getRef(position).getKey(),Common.currentUser.getPhone());
-                            if (!isExists) {
-                                new Database(getBaseContext()).addToCart(new Order(
-                                        Common.currentUser.getPhone(),
-                                        adapter.getRef(position).getKey(),
-                                        model.getName(),
-                                        "1",
-                                        model.getPrice(),
-                                        model.getDiscount(),
-                                        model.getImage()
+                viewHolder.quick_cart.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        boolean isExists = new Database(getBaseContext()).checkFoodExists(adapter.getRef(position).getKey(),Common.currentUser.getPhone());
+                        if (!isExists) {
+                            new Database(getBaseContext()).addToCart(new Order(
+                                    Common.currentUser.getPhone(),
+                                    adapter.getRef(position).getKey(),
+                                    model.getName(),
+                                    "1",
+                                    model.getPrice(),
+                                    model.getDiscount(),
+                                    model.getImage()
 
-                                ));
+                            ));
 
-                            } else {
-                                new Database(getBaseContext()).increaseCart(Common.currentUser.getPhone(), adapter.getRef(position).getKey());
-                            }
-
-                            Toast.makeText(FoodList.this, "Added to Cart", Toast.LENGTH_SHORT).show();
-
+                        } else {
+                            new Database(getBaseContext()).increaseCart(Common.currentUser.getPhone(), adapter.getRef(position).getKey());
                         }
-                    });
+
+                        Toast.makeText(FoodList.this, "Added to Cart", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
 
 
 

@@ -70,7 +70,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Home extends AppCompatActivity
-    implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     FirebaseDatabase database;
     DatabaseReference category;
@@ -120,13 +120,13 @@ public class Home extends AppCompatActivity
                 android.R.color.holo_green_dark,
                 android.R.color.holo_orange_dark,
                 android.R.color.holo_blue_dark
-                );
+        );
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
 
-                
+
                 if(Common.isConnectedToInternet((getBaseContext())))
                     loadMenu();
                 else
@@ -186,8 +186,8 @@ public class Home extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               Intent cartIntent = new Intent(Home.this,Cart.class);
-               startActivity(cartIntent);
+                Intent cartIntent = new Intent(Home.this,Cart.class);
+                startActivity(cartIntent);
             }
         });
 
@@ -326,10 +326,10 @@ public class Home extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-       // int id = item.getItemId();
+        // int id = item.getItemId();
 
-       // if (id == R.id.action_settings) {
-         //   return true;
+        // if (id == R.id.action_settings) {
+        //   return true;
         //}
 
         if(item.getItemId() == R.id.nav_search)
@@ -364,7 +364,7 @@ public class Home extends AppCompatActivity
             startActivity(signin);
 
         }
-        else if(id == R.id.nav_change_pwd) 
+        else if(id == R.id.nav_change_pwd)
         {
             showChangePasswordDialog();
         }

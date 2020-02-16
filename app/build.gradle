@@ -38,6 +38,7 @@ dependencies {
 
     implementation 'com.nineoldandroids:library:2.4.0'
     implementation 'com.daimajia.slider:library:1.1.5@aar'
+    implementation 'com.paypal.sdk:paypal-android-sdk:2.15.3'
 
     //google play service library
     implementation 'com.google.android.gms:play-services-places:16.0.0'

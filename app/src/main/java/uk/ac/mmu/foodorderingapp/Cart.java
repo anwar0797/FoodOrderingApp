@@ -1,14 +1,17 @@
 package uk.ac.mmu.foodorderingapp;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import uk.ac.mmu.foodorderingapp.Common.Common;
+import uk.ac.mmu.foodorderingapp.Common.Config;
 import uk.ac.mmu.foodorderingapp.Database.Database;
 import uk.ac.mmu.foodorderingapp.Helper.RecyclerItemTouchHelper;
 import uk.ac.mmu.foodorderingapp.Interface.RecyclerItemTouchHelperListener;
+import uk.ac.mmu.foodorderingapp.Model.Collection;
 import uk.ac.mmu.foodorderingapp.Model.Order;
 import uk.ac.mmu.foodorderingapp.Model.Request;
 import uk.ac.mmu.foodorderingapp.ViewHolder.CartAdapter;
@@ -16,17 +19,21 @@ import uk.ac.mmu.foodorderingapp.ViewHolder.CartViewHolder;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,9 +42,18 @@ import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.paypal.android.sdk.payments.PayPalConfiguration;
+import com.paypal.android.sdk.payments.PayPalPayment;
+import com.paypal.android.sdk.payments.PayPalService;
+import com.paypal.android.sdk.payments.PaymentActivity;
+import com.paypal.android.sdk.payments.PaymentConfirmation;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.rey.material.widget.SnackBar;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +61,7 @@ import java.util.Locale;
 
 public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperListener {
 
+    private static final int PAYPAL_REQUEST_CODE = 9999;
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
 
@@ -57,6 +74,12 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
     List<Order> cart = new ArrayList<>();
 
     CartAdapter adapter;
+
+    //paypal service
+    static PayPalConfiguration config = new PayPalConfiguration()
+            .environment(PayPalConfiguration.ENVIRONMENT_SANDBOX)
+            .clientId(Config.PAYPAL_CLIENT_ID);
+    String address,comment;
 
     RelativeLayout rootLayout;
 
@@ -77,6 +100,11 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
         .build());
 
         setContentView(R.layout.activity_cart);
+
+        //init paypal
+        Intent intent = new Intent(this, PayPalService.class);
+        intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION,config);
+        startService(intent);
 
         rootLayout = (RelativeLayout)findViewById(R.id.rootLayout);
 
@@ -130,6 +158,10 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
         final MaterialEditText edtAddress = (MaterialEditText)order_address_comment.findViewById(R.id.edtAddress);
         final MaterialEditText edtComment = (MaterialEditText)order_address_comment.findViewById(R.id.edtComment);
 
+        final RadioButton btnCollection = (RadioButton) order_address_comment.findViewById(R.id.btnCollection);
+        final RadioButton btnDelivery = (RadioButton) order_address_comment.findViewById(R.id.btnDelivery);
+
+
 
         alertDialog.setView(order_address_comment);
         alertDialog.setIcon(R.drawable.ic_shopping_cart_black_24dp);
@@ -137,6 +169,37 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
         alertDialog.setPositiveButton("CONFIRM", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+
+                //show paypal screen for payment
+                //first get address and comment from alert dialog
+                address = edtAddress.getText().toString();
+                comment = edtComment.getText().toString();
+
+                if (TextUtils.isEmpty(address) && (btnCollection.isChecked() || btnDelivery.isChecked())) {
+                    Toast.makeText(Cart.this, "Please enter address", Toast.LENGTH_SHORT).show();
+                }
+                else if(!btnCollection.isChecked() && !btnDelivery.isChecked())
+                {
+                    Toast.makeText(Cart.this, "Please select a delivery option", Toast.LENGTH_SHORT).show();
+                }
+
+                else if (!TextUtils.isEmpty(address) && btnDelivery.isChecked()){
+
+                    String formatAmount = txtTotalPrice.getText().toString()
+                            .replace("£", "")
+                            .replace(",", "");
+
+                    PayPalPayment payPalPayment = new PayPalPayment(new BigDecimal(formatAmount),
+                            "GBP",
+                            "Food App Order",
+                            PayPalPayment.PAYMENT_INTENT_SALE);
+                    Intent intent = new Intent(getApplicationContext(), PaymentActivity.class);
+                    intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
+                    intent.putExtra(PaymentActivity.EXTRA_PAYMENT, payPalPayment);
+                    startActivityForResult(intent, PAYPAL_REQUEST_CODE);
+
+
+                /*
                 //create new request
                 Request request = new Request(
                         Common.currentUser.getPhone(),
@@ -157,7 +220,44 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
                 new Database(getBaseContext()).cleanCart(Common.currentUser.getPhone());
                 Toast.makeText(Cart.this, "Thank you, your order has been placed.", Toast.LENGTH_SHORT).show();
                 finish();
+
+                 */
+
+
+                }
+
+                else if(!TextUtils.isEmpty(address) && btnCollection.isChecked())
+                {
+                    //create new request
+                    Collection request = new Collection(
+                            Common.currentUser.getPhone(),
+                            Common.currentUser.getUsername(),
+                            address,
+                            txtTotalPrice.getText().toString(),
+                            "0", //status
+                            comment,
+                            "Pay on Collection",
+                            "Unpaid",
+                            cart
+                    );
+
+                    //submit information to firebase
+                    //using System.milli to key
+                    requests.child(String.valueOf(System.currentTimeMillis()))
+                            .setValue(request);
+
+                    //delete cart
+                    new Database(getBaseContext()).cleanCart(Common.currentUser.getPhone());
+                    Toast.makeText(Cart.this, "Thank you, your order has been placed.", Toast.LENGTH_SHORT).show();
+                    finish();
+
+                    Intent intent = new Intent(Cart.this, CollectionConfirmation.class);
+                    startActivity(intent);
+
+                    Toast.makeText(Cart.this, "Your order for collection has been placed!", Toast.LENGTH_SHORT).show();
+                }
             }
+
         });
 
         alertDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
@@ -168,6 +268,56 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
         });
 
         alertDialog.show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == PAYPAL_REQUEST_CODE )
+        {
+            if(resultCode == RESULT_OK)
+            {
+                PaymentConfirmation confirmation = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
+                if(confirmation != null)
+                {
+                    try{
+                        String paymentDetail = confirmation.toJSONObject().toString(4);
+                        JSONObject jsonObject = new JSONObject(paymentDetail);
+
+
+                //create new request
+                Request request = new Request(
+                        Common.currentUser.getPhone(),
+                        Common.currentUser.getUsername(),
+                        address,
+                        txtTotalPrice.getText().toString(),
+                        "0", //status
+                        comment,
+                        "Paypal",
+                        jsonObject.getJSONObject("response").getString("state"),
+                        cart
+                );
+
+                //submit information to firebase
+                //using System.milli to key
+                requests.child(String.valueOf(System.currentTimeMillis()))
+                        .setValue(request);
+
+                //delete cart
+                new Database(getBaseContext()).cleanCart(Common.currentUser.getPhone());
+                Toast.makeText(Cart.this, "Thank you, your order has been placed.", Toast.LENGTH_SHORT).show();
+                finish();
+
+
+                    }catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            else if(resultCode == Activity.RESULT_CANCELED)
+                Toast.makeText(this, "Payment cancelled", Toast.LENGTH_SHORT).show();
+            else if(resultCode == PaymentActivity.RESULT_EXTRAS_INVALID)
+                Toast.makeText(this, "Invalid payment", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void loadListFood() {

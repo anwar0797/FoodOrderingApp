@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.rey.material.widget.LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    tools:context=".CollectionConfirmation"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/txtConfirmation"
+        android:background="#99000000"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="40dp"
+        android:layout_weight="1"
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="8"
+            android:layout_marginTop="20dp"
+            android:id="@+id/confirmationText"
+            android:text="Thank you for your order has been placed. Below are your order details."
+            android:textSize="35sp"
+            android:textColor="@color/white"
+            android:textAlignment="center"/>
+
+        <TextView
+            android:id="@+id/orderDetails"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="Your Order Details:"
+            android:layout_marginTop="50dp"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:layout_weight="2"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/collection"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Collection Number: "
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/collectTime"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Collection Time: "
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:layout_weight="0.7" />
+            <TextView
+                android:id="@+id/collectionTime"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="25 Minutes"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:layout_weight="1"
+                />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/confirmationDetailText"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="80dp"
+            android:layout_weight="7"
+            android:text="Please show have your order number ready at the collection point."
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="30sp" />
+
+
+    </LinearLayout>
+
+
+    <info.hoang8f.widget.FButton
+        android:id="@+id/btnConfirm"
+        android:text="Click here to confirm and return to main menu"
+        android:textColor="@android:color/white"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="8dp"
+        app:fButtonColor="@color/btnSignIn"
+        app:shadowColor="@android:color/black"
+        app:shadowEnabled="true"
+        app:shadowHeight="5dp"
+        app:cornerRadius="5dp"
+        android:layout_weight="1"
+        />
+
+</com.rey.material.widget.LinearLayout>
