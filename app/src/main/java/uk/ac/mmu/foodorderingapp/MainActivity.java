@@ -23,6 +23,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+/**
+ * Main page allowing users to either sign up or sign in
+ */
+
 public class MainActivity extends AppCompatActivity {
 
     Button btnSignIn, btnSignUp;
@@ -119,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
                         user.setPhone(phone); //set phone number
                         if (user.getPassword().equals(pwd)) {
 
-                            Intent homeIntent = new Intent(MainActivity.this, Home.class);
+                            Intent homeIntent = new Intent(MainActivity.this, RestaurantList.class);
                             Common.currentUser = user;
                             startActivity(homeIntent);
                             finish();

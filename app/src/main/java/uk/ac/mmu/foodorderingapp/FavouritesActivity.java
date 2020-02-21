@@ -1,6 +1,7 @@
 package uk.ac.mmu.foodorderingapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,6 +16,7 @@ import uk.ac.mmu.foodorderingapp.ViewHolder.FavouritesViewHolder;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -26,6 +28,10 @@ import com.rey.material.widget.SnackBar;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
+
+/**
+ * this class will load the favourites of the user
+ */
 
 public class FavouritesActivity extends AppCompatActivity implements RecyclerItemTouchHelperListener {
 
@@ -53,6 +59,13 @@ public class FavouritesActivity extends AppCompatActivity implements RecyclerIte
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
 
         loadFavourites();
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Your Favourites");
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
     }
 
     private void loadFavourites() {
@@ -86,5 +99,13 @@ public class FavouritesActivity extends AppCompatActivity implements RecyclerIte
             snackbar.setActionTextColor(Color.YELLOW);
             snackbar.show();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home){
+            FavouritesActivity.super.onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

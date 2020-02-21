@@ -27,8 +27,9 @@ import uk.ac.mmu.foodorderingapp.Interface.ItemClickListener;
 import uk.ac.mmu.foodorderingapp.Model.Order;
 import uk.ac.mmu.foodorderingapp.R;
 
-
-
+/**
+ * Cart adapter class which allows items to be removed and restored to cart
+ */
 public class CartAdapter extends RecyclerView.Adapter<CartViewHolder> {
 
     private List<Order> listData = new ArrayList<>();
@@ -40,17 +41,14 @@ public class CartAdapter extends RecyclerView.Adapter<CartViewHolder> {
     }
 
     @Override
-    public CartViewHolder onCreateViewHolder( ViewGroup parent, int viewType) {
+    public CartViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(cart);
-        View itemView = inflater.inflate(R.layout.cart_layout,parent,false);
+        View itemView = inflater.inflate(R.layout.cart_layout, parent, false);
         return new CartViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(CartViewHolder holder, final int position) {
-//        TextDrawable drawable = TextDrawable.builder()
-//                .buildRound(""+listData.get(position).getQuantity(), Color.RED);
-//        holder.img_cart_count.setImageDrawable(drawable);
 
         Picasso.with(cart.getBaseContext())
                 .load(listData.get(position).getImage())
@@ -70,8 +68,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartViewHolder> {
                 //calculating the total price
                 int total = 0;
                 List<Order> orders = new Database(cart).getCarts(Common.currentUser.getPhone());
-                for(Order item:orders)
-                    total+=(Integer.parseInt(order.getPrice()))*(Integer.parseInt(item.getQuantity()));
+                for (Order item : orders)
+                    total += (Integer.parseInt(order.getPrice())) * (Integer.parseInt(item.getQuantity()));
                 Locale locale = new Locale("en", "GB");
                 NumberFormat fmt = NumberFormat.getCurrencyInstance(locale);
 
@@ -81,7 +79,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartViewHolder> {
 
         Locale locale = new Locale("en", "GB");
         NumberFormat fmt = NumberFormat.getCurrencyInstance(locale);
-        int price = (Integer.parseInt(listData.get(position).getPrice()))*(Integer.parseInt(listData.get(position).getQuantity()));
+        int price = (Integer.parseInt(listData.get(position).getPrice())) * (Integer.parseInt(listData.get(position).getQuantity()));
         holder.txt_price.setText(fmt.format(price));
 
         holder.txt_cart_name.setText(listData.get(position).getProductName());
@@ -92,23 +90,19 @@ public class CartAdapter extends RecyclerView.Adapter<CartViewHolder> {
         return listData.size();
     }
 
-    public Order getItem(int position)
-    {
+    public Order getItem(int position) {
         return listData.get(position);
     }
 
-    public void removeItem(int position)
-    {
+    public void removeItem(int position) {
         listData.remove(position);
         notifyItemRemoved(position);
     }
 
-    public void restoreItem(Order item, int position)
-    {
-        listData.add(position,item);
+    public void restoreItem(Order item, int position) {
+        listData.add(position, item);
         notifyItemInserted(position);
     }
-
 
 
 }

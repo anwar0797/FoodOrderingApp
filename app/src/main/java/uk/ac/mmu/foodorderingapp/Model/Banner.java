@@ -1,8 +1,9 @@
 package uk.ac.mmu.foodorderingapp.Model;
 
+
 public class Banner {
 
-    private String id,name,image;
+    private String id, name, image;
 
     public Banner() {
     }

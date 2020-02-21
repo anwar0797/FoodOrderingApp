@@ -11,6 +11,10 @@ import uk.ac.mmu.foodorderingapp.Interface.RecyclerItemTouchHelperListener;
 import uk.ac.mmu.foodorderingapp.ViewHolder.CartViewHolder;
 import uk.ac.mmu.foodorderingapp.ViewHolder.FavouritesViewHolder;
 
+/**
+ * Recycler item helper class
+ */
+
 public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
 
     private RecyclerItemTouchHelperListener listener;
@@ -27,8 +31,8 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
 
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-        if(listener != null)
-            listener.onSwiped(viewHolder,direction,viewHolder.getAdapterPosition());
+        if (listener != null)
+            listener.onSwiped(viewHolder, direction, viewHolder.getAdapterPosition());
     }
 
     @Override
@@ -37,25 +41,22 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
     }
 
     @Override
-    public void clearView(RecyclerView recyclerView,RecyclerView.ViewHolder viewHolder) {
-        if(viewHolder instanceof CartViewHolder) {
+    public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+        if (viewHolder instanceof CartViewHolder) {
             View foregroundView = ((CartViewHolder) viewHolder).view_foreground;
             getDefaultUIUtil().clearView(foregroundView);
-        }
-        else if (viewHolder instanceof FavouritesViewHolder)
-        {
+        } else if (viewHolder instanceof FavouritesViewHolder) {
             View foregroundView = ((FavouritesViewHolder) viewHolder).view_foreground;
             getDefaultUIUtil().clearView(foregroundView);
         }
     }
 
     @Override
-    public void onChildDraw( Canvas c, RecyclerView recyclerView,RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+    public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
         if (viewHolder instanceof CartViewHolder) {
             View foregroundView = ((CartViewHolder) viewHolder).view_foreground;
             getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive);
-        }
-        else if (viewHolder instanceof FavouritesViewHolder) {
+        } else if (viewHolder instanceof FavouritesViewHolder) {
             View foregroundView = ((FavouritesViewHolder) viewHolder).view_foreground;
             getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive);
         }
@@ -63,16 +64,12 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
 
     @Override
     public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
-        if(viewHolder != null)
-        {
-            if (viewHolder instanceof CartViewHolder)
-            {
-                View foregroundView = ((CartViewHolder)viewHolder).view_foreground;
+        if (viewHolder != null) {
+            if (viewHolder instanceof CartViewHolder) {
+                View foregroundView = ((CartViewHolder) viewHolder).view_foreground;
                 getDefaultUIUtil().onSelected(foregroundView);
-            }
-            else if (viewHolder instanceof FavouritesViewHolder)
-            {
-                View foregroundView = ((FavouritesViewHolder)viewHolder).view_foreground;
+            } else if (viewHolder instanceof FavouritesViewHolder) {
+                View foregroundView = ((FavouritesViewHolder) viewHolder).view_foreground;
                 getDefaultUIUtil().onSelected(foregroundView);
             }
         }
@@ -80,15 +77,12 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
 
     @Override
     public void onChildDrawOver(@NonNull Canvas c, @NonNull RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-        if (viewHolder instanceof CartViewHolder)
-        {
-            View foregroundView = ((CartViewHolder)viewHolder).view_foreground;
-            getDefaultUIUtil().onDrawOver(c,recyclerView,foregroundView,dX,dY,actionState,isCurrentlyActive);
-        }
-        else if (viewHolder instanceof FavouritesViewHolder)
-        {
-            View foregroundView = ((FavouritesViewHolder)viewHolder).view_foreground;
-            getDefaultUIUtil().onDrawOver(c,recyclerView,foregroundView,dX,dY,actionState,isCurrentlyActive);
+        if (viewHolder instanceof CartViewHolder) {
+            View foregroundView = ((CartViewHolder) viewHolder).view_foreground;
+            getDefaultUIUtil().onDrawOver(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive);
+        } else if (viewHolder instanceof FavouritesViewHolder) {
+            View foregroundView = ((FavouritesViewHolder) viewHolder).view_foreground;
+            getDefaultUIUtil().onDrawOver(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive);
         }
     }
 }

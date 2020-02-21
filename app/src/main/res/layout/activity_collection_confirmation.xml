@@ -113,7 +113,7 @@
         app:shadowEnabled="true"
         app:shadowHeight="5dp"
         app:cornerRadius="5dp"
-        android:layout_weight="1"
+        android:layout_weight="2"
         />
 
 </com.rey.material.widget.LinearLayout>

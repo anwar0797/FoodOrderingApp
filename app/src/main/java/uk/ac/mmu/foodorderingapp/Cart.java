@@ -59,6 +59,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * main class for cart page
+ * here button clicks are implemented for user to choose deliverly methods and payment methods
+ * When user clicks delivery, can choose either paypal or card, both methods do not charge
+ */
+
 public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperListener {
 
     private static final int PAYPAL_REQUEST_CODE = 9999;
@@ -79,7 +85,7 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
     static PayPalConfiguration config = new PayPalConfiguration()
             .environment(PayPalConfiguration.ENVIRONMENT_SANDBOX)
             .clientId(Config.PAYPAL_CLIENT_ID);
-    String address,comment;
+    String address, comment;
 
     RelativeLayout rootLayout;
 
@@ -95,18 +101,18 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
 
         //set font
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
-        .setDefaultFontPath("fonts/restaurant_font.otf")
-        .setFontAttrId(R.attr.fontPath)
-        .build());
+                .setDefaultFontPath("fonts/restaurant_font.otf")
+                .setFontAttrId(R.attr.fontPath)
+                .build());
 
         setContentView(R.layout.activity_cart);
 
         //init paypal
         Intent intent = new Intent(this, PayPalService.class);
-        intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION,config);
+        intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
         startService(intent);
 
-        rootLayout = (RelativeLayout)findViewById(R.id.rootLayout);
+        rootLayout = (RelativeLayout) findViewById(R.id.rootLayout);
 
         //Firebase
         database = FirebaseDatabase.getInstance();
@@ -119,7 +125,7 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
         recyclerView.setLayoutManager(layoutManager);
 
         //swipe to delete
-        ItemTouchHelper .SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0,ItemTouchHelper.LEFT,this);
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
 
         txtTotalPrice = (TextView) findViewById(R.id.total);
@@ -132,16 +138,15 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
             public void onClick(View view) {
                 //make a new request
 
-                if(cart.size() > 0)
+                if (cart.size() > 0)
                     ShowAlertDialog();
-                else
-                {
+                else {
                     Toast.makeText(Cart.this, "Your cart is empty!", Toast.LENGTH_SHORT).show();
                 }
 
             }
         });
-        
+
         loadListFood();
 
 
@@ -155,12 +160,11 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
         LayoutInflater inflater = this.getLayoutInflater();
         View order_address_comment = inflater.inflate(R.layout.order_address_comment, null);
 
-        final MaterialEditText edtAddress = (MaterialEditText)order_address_comment.findViewById(R.id.edtAddress);
-        final MaterialEditText edtComment = (MaterialEditText)order_address_comment.findViewById(R.id.edtComment);
+        final MaterialEditText edtAddress = (MaterialEditText) order_address_comment.findViewById(R.id.edtAddress);
+        final MaterialEditText edtComment = (MaterialEditText) order_address_comment.findViewById(R.id.edtComment);
 
         final RadioButton btnCollection = (RadioButton) order_address_comment.findViewById(R.id.btnCollection);
         final RadioButton btnDelivery = (RadioButton) order_address_comment.findViewById(R.id.btnDelivery);
-
 
 
         alertDialog.setView(order_address_comment);
@@ -177,13 +181,9 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
 
                 if (TextUtils.isEmpty(address) && (btnCollection.isChecked() || btnDelivery.isChecked())) {
                     Toast.makeText(Cart.this, "Please enter address", Toast.LENGTH_SHORT).show();
-                }
-                else if(!btnCollection.isChecked() && !btnDelivery.isChecked())
-                {
+                } else if (!btnCollection.isChecked() && !btnDelivery.isChecked()) {
                     Toast.makeText(Cart.this, "Please select a delivery option", Toast.LENGTH_SHORT).show();
-                }
-
-                else if (!TextUtils.isEmpty(address) && btnDelivery.isChecked()){
+                } else if (!TextUtils.isEmpty(address) && btnDelivery.isChecked()) {
 
                     String formatAmount = txtTotalPrice.getText().toString()
                             .replace("£", "")
@@ -224,10 +224,7 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
                  */
 
 
-                }
-
-                else if(!TextUtils.isEmpty(address) && btnCollection.isChecked())
-                {
+                } else if (!TextUtils.isEmpty(address) && btnCollection.isChecked()) {
                     //create new request
                     Collection request = new Collection(
                             Common.currentUser.getPhone(),
@@ -272,50 +269,46 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == PAYPAL_REQUEST_CODE )
-        {
-            if(resultCode == RESULT_OK)
-            {
+        if (requestCode == PAYPAL_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
                 PaymentConfirmation confirmation = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
-                if(confirmation != null)
-                {
-                    try{
+                if (confirmation != null) {
+                    try {
                         String paymentDetail = confirmation.toJSONObject().toString(4);
                         JSONObject jsonObject = new JSONObject(paymentDetail);
 
 
-                //create new request
-                Request request = new Request(
-                        Common.currentUser.getPhone(),
-                        Common.currentUser.getUsername(),
-                        address,
-                        txtTotalPrice.getText().toString(),
-                        "0", //status
-                        comment,
-                        "Paypal",
-                        jsonObject.getJSONObject("response").getString("state"),
-                        cart
-                );
+                        //create new request
+                        Request request = new Request(
+                                Common.currentUser.getPhone(),
+                                Common.currentUser.getUsername(),
+                                address,
+                                txtTotalPrice.getText().toString(),
+                                "0", //status
+                                comment,
+                                "Paypal",
+                                jsonObject.getJSONObject("response").getString("state"),
+                                cart
+                        );
 
-                //submit information to firebase
-                //using System.milli to key
-                requests.child(String.valueOf(System.currentTimeMillis()))
-                        .setValue(request);
+                        //submit information to firebase
+                        //using System.milli to key
+                        requests.child(String.valueOf(System.currentTimeMillis()))
+                                .setValue(request);
 
-                //delete cart
-                new Database(getBaseContext()).cleanCart(Common.currentUser.getPhone());
-                Toast.makeText(Cart.this, "Thank you, your order has been placed.", Toast.LENGTH_SHORT).show();
-                finish();
+                        //delete cart
+                        new Database(getBaseContext()).cleanCart(Common.currentUser.getPhone());
+                        Toast.makeText(Cart.this, "Thank you, your order has been placed.", Toast.LENGTH_SHORT).show();
+                        finish();
 
 
-                    }catch (JSONException e) {
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
-            }
-            else if(resultCode == Activity.RESULT_CANCELED)
+            } else if (resultCode == Activity.RESULT_CANCELED)
                 Toast.makeText(this, "Payment cancelled", Toast.LENGTH_SHORT).show();
-            else if(resultCode == PaymentActivity.RESULT_EXTRAS_INVALID)
+            else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID)
                 Toast.makeText(this, "Invalid payment", Toast.LENGTH_SHORT).show();
         }
     }
@@ -327,12 +320,10 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
         recyclerView.setAdapter(adapter);
 
 
-
-
         //calculating the total price
         int total = 0;
-        for(Order order:cart)
-            total+=(Integer.parseInt(order.getPrice()))*(Integer.parseInt(order.getQuantity()));
+        for (Order order : cart)
+            total += (Integer.parseInt(order.getPrice())) * (Integer.parseInt(order.getQuantity()));
         Locale locale = new Locale("en", "GB");
         NumberFormat fmt = NumberFormat.getCurrencyInstance(locale);
 
@@ -341,7 +332,7 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        if(item.getTitle().equals(Common.DELETE))
+        if (item.getTitle().equals(Common.DELETE))
             deleteCart(item.getOrder());
         return true;
     }
@@ -352,7 +343,7 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
         //after, delete all old data from SQLite
         new Database(this).cleanCart(Common.currentUser.getPhone());
         //then update new data from List<Order> to SQLite
-        for(Order item:cart)
+        for (Order item : cart)
             new Database(this).addToCart(item);
         //refresh
         loadListFood();
@@ -361,41 +352,40 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
 
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
-        if(viewHolder instanceof CartViewHolder)
-        {
-            String name = ((CartAdapter)recyclerView.getAdapter()).getItem(viewHolder.getAdapterPosition()).getProductName();
+        if (viewHolder instanceof CartViewHolder) {
+            String name = ((CartAdapter) recyclerView.getAdapter()).getItem(viewHolder.getAdapterPosition()).getProductName();
 
-            final Order deleteItem = ((CartAdapter)recyclerView.getAdapter()).getItem(viewHolder.getAdapterPosition());
+            final Order deleteItem = ((CartAdapter) recyclerView.getAdapter()).getItem(viewHolder.getAdapterPosition());
             final int deleteIndex = viewHolder.getAdapterPosition();
 
             adapter.removeItem(deleteIndex);
-            new Database(getBaseContext()).removeFromCart(deleteItem.getProductId(),Common.currentUser.getPhone());
+            new Database(getBaseContext()).removeFromCart(deleteItem.getProductId(), Common.currentUser.getPhone());
 
             //update txttotal
             //calculating the total price
             int total = 0;
             List<Order> orders = new Database(getBaseContext()).getCarts(Common.currentUser.getPhone());
-            for(Order item:orders)
-                total+=(Integer.parseInt(item.getPrice()))*(Integer.parseInt(item.getQuantity()));
+            for (Order item : orders)
+                total += (Integer.parseInt(item.getPrice())) * (Integer.parseInt(item.getQuantity()));
             Locale locale = new Locale("en", "GB");
             NumberFormat fmt = NumberFormat.getCurrencyInstance(locale);
 
             txtTotalPrice.setText(fmt.format(total));
 
             //make snackbar
-            Snackbar snackbar = Snackbar.make(rootLayout, name + " removed from cart!",Snackbar.LENGTH_LONG);
+            Snackbar snackbar = Snackbar.make(rootLayout, name + " removed from cart!", Snackbar.LENGTH_LONG);
             snackbar.setAction("UNDO", new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    adapter.restoreItem(deleteItem,deleteIndex);
+                    adapter.restoreItem(deleteItem, deleteIndex);
                     new Database(getBaseContext()).addToCart(deleteItem);
 
                     //update txttotal
                     //calculating the total price
                     int total = 0;
                     List<Order> orders = new Database(getBaseContext()).getCarts(Common.currentUser.getPhone());
-                    for(Order item:orders)
-                        total+=(Integer.parseInt(item.getPrice()))*(Integer.parseInt(item.getQuantity()));
+                    for (Order item : orders)
+                        total += (Integer.parseInt(item.getPrice())) * (Integer.parseInt(item.getQuantity()));
                     Locale locale = new Locale("en", "GB");
                     NumberFormat fmt = NumberFormat.getCurrencyInstance(locale);
 

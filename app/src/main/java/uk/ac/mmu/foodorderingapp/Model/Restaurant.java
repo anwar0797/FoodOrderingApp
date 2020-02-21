@@ -2,7 +2,7 @@ package uk.ac.mmu.foodorderingapp.Model;
 
 public class Restaurant {
 
-    private String name,image;
+    private String name, image;
 
     public Restaurant(String name, String image) {
         this.name = name;

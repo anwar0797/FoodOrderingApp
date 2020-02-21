@@ -1,7 +1,7 @@
 package uk.ac.mmu.foodorderingapp.Model;
 
 public class Favourites {
-    private String FoodId,FoodName,FoodPrice,FoodMenuId,FoodImage,FoodDiscount,FoodDescription,UserPhone;
+    private String FoodId, FoodName, FoodPrice, FoodMenuId, FoodImage, FoodDiscount, FoodDescription, UserPhone;
 
     public Favourites() {
     }

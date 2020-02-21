@@ -3,7 +3,7 @@ package uk.ac.mmu.foodorderingapp.Model;
 public class Rating {
 
     private String userPhone;
-    private String foodId;
+    private String FoodId;
     private String rateValue;
     private String comment;
 
@@ -12,7 +12,7 @@ public class Rating {
 
     public Rating(String userPhone, String foodId, String rateValue, String comment) {
         this.userPhone = userPhone;
-        this.foodId = foodId;
+        this.FoodId = foodId;
         this.rateValue = rateValue;
         this.comment = comment;
     }
@@ -26,11 +26,11 @@ public class Rating {
     }
 
     public String getFoodId() {
-        return foodId;
+        return FoodId;
     }
 
     public void setFoodId(String foodId) {
-        this.foodId = foodId;
+        this.FoodId = foodId;
     }
 
     public String getRateValue() {

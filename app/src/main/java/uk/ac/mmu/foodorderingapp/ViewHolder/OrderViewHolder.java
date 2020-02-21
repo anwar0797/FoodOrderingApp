@@ -20,12 +20,12 @@ public class OrderViewHolder extends RecyclerView.ViewHolder implements View.OnC
     public OrderViewHolder(@NonNull View itemView) {
         super(itemView);
 
-        txtOrderAddress = (TextView)itemView.findViewById(R.id.order_Address);
-        txtOrderId = (TextView)itemView.findViewById(R.id.order_id);
-        txtOrderStatus = (TextView)itemView.findViewById(R.id.order_status);
-        txtOrderPhone = (TextView)itemView.findViewById(R.id.order_phone);
-        txtOrderDate = (TextView)itemView.findViewById(R.id.order_date);
-        btn_delete = (ImageView)itemView.findViewById(R.id.btn_delete);
+        txtOrderAddress = (TextView) itemView.findViewById(R.id.order_Address);
+        txtOrderId = (TextView) itemView.findViewById(R.id.order_id);
+        txtOrderStatus = (TextView) itemView.findViewById(R.id.order_status);
+        txtOrderPhone = (TextView) itemView.findViewById(R.id.order_phone);
+        txtOrderDate = (TextView) itemView.findViewById(R.id.order_date);
+        btn_delete = (ImageView) itemView.findViewById(R.id.btn_delete);
 
         itemView.setOnClickListener(this);
 
@@ -38,7 +38,7 @@ public class OrderViewHolder extends RecyclerView.ViewHolder implements View.OnC
 
     @Override
     public void onClick(View view) {
-        itemClickListener.onClick(view,getAdapterPosition(),false);
+        itemClickListener.onClick(view, getAdapterPosition(), false);
 
     }
 }

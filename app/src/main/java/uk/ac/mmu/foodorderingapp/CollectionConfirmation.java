@@ -17,6 +17,9 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Random;
 
+/**
+ * collection confirmation page
+ */
 public class CollectionConfirmation extends AppCompatActivity {
 
     TextView confirmationText, orderDetails, collection, collectionNumber, collectTime, collectionTime, confirmationDetailText;
@@ -27,14 +30,14 @@ public class CollectionConfirmation extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collection_confirmation);
 
-        confirmationText = (TextView)findViewById(R.id.confirmationText);
-        orderDetails = (TextView)findViewById(R.id.orderDetails);
-        collection = (TextView)findViewById(R.id.collection);
+        confirmationText = (TextView) findViewById(R.id.confirmationText);
+        orderDetails = (TextView) findViewById(R.id.orderDetails);
+        collection = (TextView) findViewById(R.id.collection);
         //collectionNumber = (TextView)findViewById(R.id.collectionNumber);
-        collectTime = (TextView)findViewById(R.id.collectTime);
-        collectionTime = (TextView)findViewById(R.id.collectionTime);
-        confirmationDetailText = (TextView)findViewById(R.id.confirmationDetailText);
-        btnConfirm = (FButton)findViewById(R.id.btnConfirm);
+        collectTime = (TextView) findViewById(R.id.collectTime);
+        collectionTime = (TextView) findViewById(R.id.collectionTime);
+        confirmationDetailText = (TextView) findViewById(R.id.confirmationDetailText);
+        btnConfirm = (FButton) findViewById(R.id.btnConfirm);
 
         collection.setText("Collection Number: " + randInt(1000, 2000));
 
@@ -48,13 +51,11 @@ public class CollectionConfirmation extends AppCompatActivity {
         });
 
 
-
     }
 
-    public static int randInt(int start, int finish)
-    {
+    public static int randInt(int start, int finish) {
         Random rnd = new Random();
-        int randInt = rnd.nextInt(finish + 1 - start ) + start;
+        int randInt = rnd.nextInt(finish + 1 - start) + start;
         return randInt;
     }
 

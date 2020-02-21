@@ -15,6 +15,7 @@
         android:fitsSystemWindows="true"
         >
 
+
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/collapsing"
             android:layout_width="match_parent"
@@ -24,6 +25,7 @@
             app:contentScrim="#0e0d0e"
             app:expandedTitleTextAppearance="@android:color/transparent"
             >
+
 
             <ImageView
                 android:id="@+id/img_food"
@@ -147,12 +149,37 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginLeft="8dp"
                         android:layout_marginBottom="18dp"
-                        app:textSize="8sp"
+                        app:textSize="7sp"
                         app:backGroundColor="@color/colorAccent"
                         app:initialNumber="1"
                         app:finalNumber="20"
 
                         />
+
+                    <!--
+                    Add extra options button here
+                    and add option for spice and so on
+                    -->
+
+                   <!-- <info.hoang8f.widget.FButton
+                        android:id="@+id/btnAddExtras"
+                        android:text="Add Extras?"
+                        android:textColor="@android:color/white"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:layout_margin="8dp"
+                        app:fButtonColor="@color/btnSignIn"
+                        app:shadowColor="@android:color/black"
+                        app:shadowEnabled="true"
+                        app:shadowHeight="5dp"
+                        app:cornerRadius="4dp"
+                        /> -->
+
+
 
 
 
@@ -197,7 +224,7 @@
 
             </androidx.cardview.widget.CardView>
 
-    <!--        <info.hoang8f.widget.FButton
+            <info.hoang8f.widget.FButton
                 android:id="@+id/btnShowComment"
                 android:text="Show Comments"
                 android:textColor="@android:color/white"
@@ -212,7 +239,7 @@
                 app:shadowEnabled="true"
                 app:shadowHeight="5dp"
                 app:cornerRadius="4dp"
-                /> -->
+                />
 
 
         </LinearLayout>

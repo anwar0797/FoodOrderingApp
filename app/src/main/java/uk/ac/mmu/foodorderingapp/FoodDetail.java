@@ -2,6 +2,7 @@ package uk.ac.mmu.foodorderingapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import info.hoang8f.widget.FButton;
 import uk.ac.mmu.foodorderingapp.Common.Common;
 import uk.ac.mmu.foodorderingapp.Database.Database;
@@ -14,7 +15,9 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -38,7 +41,11 @@ import com.stepstone.apprating.listener.RatingDialogListener;
 
 import java.util.Arrays;
 
-public class FoodDetail extends AppCompatActivity implements RatingDialogListener {
+/**
+ * This page will display the details of the food when a user clicks on a specific item of food from the FoodList class.
+ */
+
+public class FoodDetail extends AppCompatActivity implements RatingDialogListener  {
 
     TextView food_name, food_price, food_description;
     ImageView food_image;
@@ -56,8 +63,11 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
     DatabaseReference ratingTbl;
 
     FButton btnShowComment;
+    //FButton btnAddExtras;
 
     Food currentFood;
+
+    ImageButton btn_Back;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -76,7 +86,7 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
 
         setContentView(R.layout.activity_food_detail);
 
-       /* btnShowComment = (FButton)findViewById(R.id.btnShowComment);
+        btnShowComment = (FButton)findViewById(R.id.btnShowComment);
         btnShowComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -84,11 +94,12 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
                 intent.putExtra(Common.INTENT_FOOD_ID,foodId);
                 startActivity(intent);
             }
-        }); */
+        });
 
         //firebase
         database = FirebaseDatabase.getInstance();
-        food = database.getReference("Food");
+        food = database.getReference("Restaurants").child(Common.restaurantSelected)
+                .child("detail").child("Food");
         ratingTbl = database.getReference("Rating");
 
         //init view
@@ -135,7 +146,7 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
 
         //get food id from intent
         if(getIntent() != null)
-            foodId = getIntent().getStringExtra("FoodId");
+            foodId = getIntent().getStringExtra("foodId");
         if(!foodId.isEmpty())
         {
             if(Common.isConnectedToInternet(getBaseContext()))
@@ -149,8 +160,6 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
                 return;
             }
         }
-
-
 
     }
 
@@ -245,7 +254,7 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
                 String.valueOf(value),
                 comments);
 
-       /* //allowing user to rate food mulitple times
+        //allowing user to rate food mulitple times
         ratingTbl.push()
                 .setValue(rating)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -253,10 +262,12 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
                     public void onComplete(@NonNull Task<Void> task) {
                         Toast.makeText(FoodDetail.this, "Thank you for submitting your rating!", Toast.LENGTH_SHORT).show();
                     }
-                }); */
+                });
 
 
-        ratingTbl.child(Common.currentUser.getPhone()).addValueEventListener(new ValueEventListener() {
+       //single comment original
+
+       /* ratingTbl.child(Common.currentUser.getPhone()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.child(Common.currentUser.getPhone()).exists())
@@ -280,6 +291,8 @@ public class FoodDetail extends AppCompatActivity implements RatingDialogListene
 
             }
 
-        });
+
+        }); */
     }
+
 }

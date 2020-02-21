@@ -1,7 +1,6 @@
 package uk.ac.mmu.foodorderingapp.Model;
 
 
-
 public class User {
     private String Username;
     private String Password;

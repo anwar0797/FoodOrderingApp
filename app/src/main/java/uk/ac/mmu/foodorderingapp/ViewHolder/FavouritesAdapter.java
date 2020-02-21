@@ -23,6 +23,9 @@ import uk.ac.mmu.foodorderingapp.Model.Food;
 import uk.ac.mmu.foodorderingapp.Model.Order;
 import uk.ac.mmu.foodorderingapp.R;
 
+/**
+ * Favoruites adapter class which allows to add or remove items from their favourites
+ */
 public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesViewHolder> {
 
     private Context context;
@@ -36,7 +39,7 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesViewHolder
     @Override
     public FavouritesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(context)
-                .inflate(R.layout.favourites_item,parent,false);
+                .inflate(R.layout.favourites_item, parent, false);
         return new FavouritesViewHolder(itemView);
     }
 
@@ -80,8 +83,8 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesViewHolder
             @Override
             public void onClick(View view, int position, boolean isLongClick) {
                 //Start new activity
-                Intent foodDetail = new Intent (context, FoodDetail.class);
-                foodDetail.putExtra("FoodId",favouritesList.get(position).getFoodId()); //send food id to new activity
+                Intent foodDetail = new Intent(context, FoodDetail.class);
+                foodDetail.putExtra("FoodId", favouritesList.get(position).getFoodId()); //send food id to new activity
                 context.startActivity(foodDetail);
             }
         });
@@ -92,20 +95,17 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesViewHolder
         return favouritesList.size();
     }
 
-    public void removeItem(int position)
-    {
+    public void removeItem(int position) {
         favouritesList.remove(position);
         notifyItemRemoved(position);
     }
 
-    public void restoreItem(Favourites item, int position)
-    {
-        favouritesList.add(position,item);
+    public void restoreItem(Favourites item, int position) {
+        favouritesList.add(position, item);
         notifyItemInserted(position);
     }
 
-    public Favourites getItem(int position)
-    {
+    public Favourites getItem(int position) {
         return favouritesList.get(position);
     }
 

@@ -19,11 +19,11 @@ public class CollectionViewHolder extends RecyclerView.ViewHolder implements Vie
     public CollectionViewHolder(@NonNull View itemView) {
         super(itemView);
 
-        txtOrderAddress = (TextView)itemView.findViewById(R.id.order_Address);
-        txtOrderId = (TextView)itemView.findViewById(R.id.order_id);
-        txtOrderStatus = (TextView)itemView.findViewById(R.id.order_status);
-        txtOrderPhone = (TextView)itemView.findViewById(R.id.order_phone);
-        txtOrderDate = (TextView)itemView.findViewById(R.id.order_date);
+        txtOrderAddress = (TextView) itemView.findViewById(R.id.order_Address);
+        txtOrderId = (TextView) itemView.findViewById(R.id.order_id);
+        txtOrderStatus = (TextView) itemView.findViewById(R.id.order_status);
+        txtOrderPhone = (TextView) itemView.findViewById(R.id.order_phone);
+        txtOrderDate = (TextView) itemView.findViewById(R.id.order_date);
 
         itemView.setOnClickListener(this);
 
@@ -36,7 +36,7 @@ public class CollectionViewHolder extends RecyclerView.ViewHolder implements Vie
 
     @Override
     public void onClick(View view) {
-        itemClickListener.onClick(view,getAdapterPosition(),false);
+        itemClickListener.onClick(view, getAdapterPosition(), false);
 
     }
 

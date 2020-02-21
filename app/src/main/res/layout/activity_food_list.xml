@@ -6,23 +6,24 @@
     android:id="@+id/swipe_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background"
     tools:context=".FoodList">
     
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <com.mancj.materialsearchbar.MaterialSearchBar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/searchBar"
-        android:layout_alignParentTop="true"
-        app:mt_speechMode="false"
-        app:mt_hint="Enter your food name"
+        <com.mancj.materialsearchbar.MaterialSearchBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/searchBar"
+            android:layout_alignParentTop="true"
+            app:mt_speechMode="false"
+            app:mt_hint="Enter your food name">
 
-        />
+        </com.mancj.materialsearchbar.MaterialSearchBar>
 
-    <androidx.recyclerview.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
         android:layout_below="@id/searchBar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

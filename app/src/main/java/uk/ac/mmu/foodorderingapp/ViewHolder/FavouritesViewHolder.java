@@ -27,12 +27,12 @@ public class FavouritesViewHolder extends RecyclerView.ViewHolder implements Vie
     public FavouritesViewHolder(View itemView) {
         super(itemView);
 
-        food_name = (TextView)itemView.findViewById(R.id.food_name);
-        food_image = (ImageView)itemView.findViewById(R.id.food_image);
-        fav_image = (ImageView)itemView.findViewById(R.id.fav);
-        food_price = (TextView)itemView.findViewById(R.id.food_price);
-        quick_cart = (ImageView)itemView.findViewById(R.id.btn_quick_cart);
-        view_background = (RelativeLayout)itemView.findViewById(R.id.view_background);
+        food_name = (TextView) itemView.findViewById(R.id.food_name);
+        food_image = (ImageView) itemView.findViewById(R.id.food_image);
+        fav_image = (ImageView) itemView.findViewById(R.id.fav);
+        food_price = (TextView) itemView.findViewById(R.id.food_price);
+        quick_cart = (ImageView) itemView.findViewById(R.id.btn_quick_cart);
+        view_background = (RelativeLayout) itemView.findViewById(R.id.view_background);
         view_foreground = (LinearLayout) itemView.findViewById(R.id.view_foreground);
 
         itemView.setOnClickListener(this);

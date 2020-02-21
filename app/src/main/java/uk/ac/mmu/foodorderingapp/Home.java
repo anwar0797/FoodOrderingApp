@@ -69,6 +69,12 @@ import android.widget.Toast;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Menu page showing categories from database
+ * drawer layout on this page to quickly access cart, orders, favourites
+ * option to change password from drawerlayout
+ */
+
 public class Home extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -87,7 +93,7 @@ public class Home extends AppCompatActivity
     CounterFab fab;
 
     //slider
-    HashMap<String,String> image_list;
+    HashMap<String, String> image_list;
     SliderLayout mSlider;
 
     @Override
@@ -115,7 +121,7 @@ public class Home extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         //view
-        swipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.swipe_layout);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,
                 android.R.color.holo_green_dark,
                 android.R.color.holo_orange_dark,
@@ -127,10 +133,9 @@ public class Home extends AppCompatActivity
             public void onRefresh() {
 
 
-                if(Common.isConnectedToInternet((getBaseContext())))
+                if (Common.isConnectedToInternet((getBaseContext())))
                     loadMenu();
-                else
-                {
+                else {
                     Toast.makeText(getBaseContext(), "Please check your connection", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -143,10 +148,9 @@ public class Home extends AppCompatActivity
             @Override
             public void run() {
 
-                if(Common.isConnectedToInternet(getBaseContext()))
+                if (Common.isConnectedToInternet(getBaseContext()))
                     loadMenu();
-                else
-                {
+                else {
                     Toast.makeText(getBaseContext(), "Please check your connection", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -156,9 +160,10 @@ public class Home extends AppCompatActivity
 
         //init firebase
         database = FirebaseDatabase.getInstance();
-        category = database.getReference("Category");
+        category = database.getReference("Restaurants").child(Common.restaurantSelected)
+                .child("detail").child("Category");
 
-        adapter = new FirebaseRecyclerAdapter<Category, MenuViewHolder>(Category.class,R.layout.menu_item,MenuViewHolder.class,category) {
+        adapter = new FirebaseRecyclerAdapter<Category, MenuViewHolder>(Category.class, R.layout.menu_item, MenuViewHolder.class, category) {
             @Override
             protected void populateViewHolder(MenuViewHolder viewHolder, Category model, int position) {
                 viewHolder.txtMenuName.setText(model.getName());
@@ -169,9 +174,9 @@ public class Home extends AppCompatActivity
                     @Override
                     public void onClick(View view, int position, boolean isLongClick) {
                         //get category id and send to new activity
-                        Intent foodList = new Intent(Home.this,FoodList.class);
+                        Intent foodList = new Intent(Home.this, FoodList.class);
                         //category is key so get key of item
-                        foodList.putExtra("CategoryId",  adapter.getRef(position).getKey());
+                        foodList.putExtra("CategoryId", adapter.getRef(position).getKey());
                         startActivity(foodList);
                     }
                 });
@@ -186,7 +191,7 @@ public class Home extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent cartIntent = new Intent(Home.this,Cart.class);
+                Intent cartIntent = new Intent(Home.this, Cart.class);
                 startActivity(cartIntent);
             }
         });
@@ -208,7 +213,7 @@ public class Home extends AppCompatActivity
         txtFullName.setText(Common.currentUser.getUsername());
 
         //load menu
-        recycler_menu = (RecyclerView)findViewById(R.id.recycler_menu);
+        recycler_menu = (RecyclerView) findViewById(R.id.recycler_menu);
         //layoutManager = new LinearLayoutManager(this);
         //recycler_menu.setLayoutManager(layoutManager);
 
@@ -225,22 +230,22 @@ public class Home extends AppCompatActivity
     }
 
     private void setupSlider() {
-        mSlider = (SliderLayout)findViewById(R.id.slider);
+        mSlider = (SliderLayout) findViewById(R.id.slider);
         image_list = new HashMap<>();
 
-        final DatabaseReference banners = database.getReference("Banner");
+        final DatabaseReference banners = database.getReference("Restaurants").child(Common.restaurantSelected)
+                .child("detail").child("Banner");
 
         banners.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot postSnapshot:dataSnapshot.getChildren()) {
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
 
                     Banner banner = postSnapshot.getValue(Banner.class);
 
-                    image_list.put(banner.getName()+"@@@"+banner.getId(),banner.getImage());
+                    image_list.put(banner.getName() + "@@@" + banner.getId(), banner.getImage());
                 }
-                for (String key:image_list.keySet())
-                {
+                for (String key : image_list.keySet()) {
                     String[] keySplit = key.split("@@@");
                     String nameOfFood = keySplit[0];
                     String idOfFood = keySplit[1];
@@ -254,7 +259,7 @@ public class Home extends AppCompatActivity
                             .setOnSliderClickListener(new BaseSliderView.OnSliderClickListener() {
                                 @Override
                                 public void onSliderClick(BaseSliderView slider) {
-                                    Intent intent = new Intent(Home.this,FoodDetail.class);
+                                    Intent intent = new Intent(Home.this, FoodDetail.class);
                                     //send food id
                                     intent.putExtras(textSliderView.getBundle());
                                     startActivity(intent);
@@ -263,7 +268,7 @@ public class Home extends AppCompatActivity
 
                     //add extra bundle
                     textSliderView.bundle(new Bundle());
-                    textSliderView.getBundle().putString("FoodId", idOfFood);
+                    textSliderView.getBundle().putString("foodId", idOfFood);
 
                     mSlider.addSlider(textSliderView);
 
@@ -326,14 +331,9 @@ public class Home extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // int id = item.getItemId();
 
-        // if (id == R.id.action_settings) {
-        //   return true;
-        //}
-
-        if(item.getItemId() == R.id.nav_search)
-            startActivity(new Intent(Home.this,SearchActivity.class));
+        if (item.getItemId() == R.id.nav_search)
+            startActivity(new Intent(Home.this, SearchActivity.class));
 
         return super.onOptionsItemSelected(item);
     }
@@ -347,11 +347,11 @@ public class Home extends AppCompatActivity
         if (id == R.id.nav_menu) {
 
         } else if (id == R.id.nav_cart) {
-            Intent cartIntent = new Intent(Home.this,Cart.class);
+            Intent cartIntent = new Intent(Home.this, Cart.class);
             startActivity(cartIntent);
 
         } else if (id == R.id.nav_orders) {
-            Intent orderIntent = new Intent(Home.this,OrderStatus.class);
+            Intent orderIntent = new Intent(Home.this, OrderStatus.class);
             startActivity(orderIntent);
 
         } else if (id == R.id.nav_log_out) {
@@ -359,17 +359,13 @@ public class Home extends AppCompatActivity
             //delete user log in info
             Paper.book().destroy();
 
-            Intent signin = new Intent(Home.this,SignIn.class);
+            Intent signin = new Intent(Home.this, SignIn.class);
             signin.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(signin);
 
-        }
-        else if(id == R.id.nav_change_pwd)
-        {
+        } else if (id == R.id.nav_change_pwd) {
             showChangePasswordDialog();
-        }
-        else if(id == R.id.nav_favourites)
-        {
+        } else if (id == R.id.nav_favourites) {
             startActivity(new Intent(Home.this, FavouritesActivity.class));
         }
 
@@ -386,9 +382,9 @@ public class Home extends AppCompatActivity
         LayoutInflater inflater = LayoutInflater.from(this);
         View layout_pwd = inflater.inflate(R.layout.change_password_layout, null);
 
-        final MaterialEditText edtPassword = (MaterialEditText)layout_pwd.findViewById(R.id.edtPassword);
-        final MaterialEditText edtNewPassword = (MaterialEditText)layout_pwd.findViewById(R.id.edtNewPassword);
-        final MaterialEditText edtRepeatPassword = (MaterialEditText)layout_pwd.findViewById(R.id.edtRepeatPassword);
+        final MaterialEditText edtPassword = (MaterialEditText) layout_pwd.findViewById(R.id.edtPassword);
+        final MaterialEditText edtNewPassword = (MaterialEditText) layout_pwd.findViewById(R.id.edtNewPassword);
+        final MaterialEditText edtRepeatPassword = (MaterialEditText) layout_pwd.findViewById(R.id.edtRepeatPassword);
 
         alertDialog.setView(layout_pwd);
 
@@ -401,12 +397,10 @@ public class Home extends AppCompatActivity
                 waitingDialog.show();
 
                 //change password
-                if(edtPassword.getText().toString().equals(Common.currentUser.getPassword()))
-                {
-                    if(edtNewPassword.getText().toString().equals(edtRepeatPassword.getText().toString()))
-                    {
-                        Map<String,Object> passwordUpdate = new HashMap<>();
-                        passwordUpdate.put("Password",edtNewPassword.getText().toString());
+                if (edtPassword.getText().toString().equals(Common.currentUser.getPassword())) {
+                    if (edtNewPassword.getText().toString().equals(edtRepeatPassword.getText().toString())) {
+                        Map<String, Object> passwordUpdate = new HashMap<>();
+                        passwordUpdate.put("Password", edtNewPassword.getText().toString());
 
                         //make update
                         DatabaseReference user = FirebaseDatabase.getInstance().getReference("User");
@@ -425,15 +419,11 @@ public class Home extends AppCompatActivity
                                         Toast.makeText(Home.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                                     }
                                 });
-                    }
-                    else
-                    {
+                    } else {
                         waitingDialog.dismiss();
                         Toast.makeText(Home.this, "New password do not match.", Toast.LENGTH_SHORT).show();
                     }
-                }
-                else
-                {
+                } else {
                     waitingDialog.dismiss();
                     Toast.makeText(Home.this, "Incorrect old password", Toast.LENGTH_SHORT).show();
                 }

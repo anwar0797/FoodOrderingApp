@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import uk.ac.mmu.foodorderingapp.Common.Common;
+import uk.ac.mmu.foodorderingapp.Interface.ItemClickListener;
 import uk.ac.mmu.foodorderingapp.Model.Request;
 import uk.ac.mmu.foodorderingapp.ViewHolder.OrderViewHolder;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
@@ -20,6 +21,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+/**
+ * order status page
+ * allows users to view orders, delete orders
+ */
 
 public class OrderStatus extends AppCompatActivity {
 
@@ -52,7 +58,7 @@ public class OrderStatus extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         requests = database.getReference("Orders");
 
-        recyclerView = (RecyclerView)findViewById(R.id.listOrders);
+        recyclerView = (RecyclerView) findViewById(R.id.listOrders);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -69,7 +75,7 @@ public class OrderStatus extends AppCompatActivity {
         ) {
 
             @Override
-            protected void populateViewHolder(OrderViewHolder viewHolder, Request model, final int position) {
+            protected void populateViewHolder(final OrderViewHolder viewHolder, Request model, final int position) {
                 viewHolder.txtOrderId.setText(adapter.getRef(position).getKey());
                 viewHolder.txtOrderStatus.setText(convertCodeToStatus(model.getStatus()));
                 viewHolder.txtOrderAddress.setText(model.getAddress());
@@ -78,11 +84,26 @@ public class OrderStatus extends AppCompatActivity {
                 viewHolder.btn_delete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(adapter.getItem(position).getStatus().equals(0))
-                            Toast.makeText(OrderStatus.this, "This order cannot be deleted!", Toast.LENGTH_SHORT).show();
-
-                        else
+                        if (adapter.getItem(position).getStatus().equals("0")) {
                             deleteOrder(adapter.getRef(position).getKey());
+                        } else {
+
+                            Toast.makeText(OrderStatus.this, "This order cannot be deleted!", Toast.LENGTH_SHORT).show();
+                        }
+
+                        viewHolder.setItemClickListener(new ItemClickListener() {
+                            @Override
+                            public void onClick(View view, int position, boolean isLongClick) {
+                                if(isLongClick == true) {
+
+                                }
+                                else {
+
+                                }
+                            }
+                        });
+
+
                     }
                 });
 
@@ -112,9 +133,9 @@ public class OrderStatus extends AppCompatActivity {
 
 
     private String convertCodeToStatus(String status) {
-        if("0".equals(status))
+        if ("0".equals(status))
             return "Placed";
-        else if("1".equals(status))
+        else if ("1".equals(status))
             return "On my way";
         else
             return "Shipped";

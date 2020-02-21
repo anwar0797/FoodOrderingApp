@@ -73,6 +73,7 @@
             android:textColor="@android:color/white"
             android:textSize="34sp"
             android:inputType="text"
+            android:text="abc123"
             app:met_baseColor="@android:color/white"
             app:met_floatingLabel="highlight"
             app:met_maxCharacters="11"

@@ -9,6 +9,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import uk.ac.mmu.foodorderingapp.Interface.ItemClickListener;
 import uk.ac.mmu.foodorderingapp.R;
 
+/**
+ * view holder to display restuarant list
+ */
+
 public class RestaurantViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     public TextView txt_restaurant_name;
